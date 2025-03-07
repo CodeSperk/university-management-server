@@ -12,6 +12,11 @@ const userNameSchema = new Schema<TUserName>(
       type: String,
       required: [true, 'First name is required'],
       trim: true,
+      validate: function (fName: string) {
+        const capitalized = fName.charAt(0).toUpperCase() + fName.slice(1);
+        console.log(fName, capitalized);
+        return fName === capitalized;
+      },
     },
     middleName: {
       type: String,
@@ -41,12 +46,6 @@ const guardianSchema = new Schema<TGuardian>(
     fatherContactNo: {
       type: String,
       required: [true, "Father's contact number is required"],
-      validate: {
-        validator: function (v: string) {
-          return /^[0-9]{10}$/.test(v); // Check for a 10-digit number
-        },
-        message: "Father's contact number must be a 10-digit number",
-      },
     },
     motherName: {
       type: String,
@@ -61,12 +60,6 @@ const guardianSchema = new Schema<TGuardian>(
     motherContactNo: {
       type: String,
       required: [true, "Mother's contact number is required"],
-      validate: {
-        validator: function (v: string) {
-          return /^[0-9]{10}$/.test(v); // Check for a 10-digit number
-        },
-        message: "Mother's contact number must be a 10-digit number",
-      },
     },
   },
   { _id: false },
@@ -134,22 +127,10 @@ const studentSchema = new Schema<TStudent>({
   contactNo: {
     type: String,
     required: [true, 'Contact number is required'],
-    validate: {
-      validator: function (v: string) {
-        return /^[0-9]{10}$/.test(v); // Check for a 10-digit number
-      },
-      message: 'Contact number must be a 10-digit number',
-    },
   },
   emergencyContactNo: {
     type: String,
     required: [true, 'Emergency contact number is required'],
-    validate: {
-      validator: function (v: string) {
-        return /^[0-9]{10}$/.test(v); // Check for a 10-digit number
-      },
-      message: 'Emergency contact number must be a 10-digit number',
-    },
   },
   bloodGroup: {
     type: String,
