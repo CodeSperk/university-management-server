@@ -12,10 +12,13 @@ const userNameSchema = new Schema<TUserName>(
       type: String,
       required: [true, 'First name is required'],
       trim: true,
-      validate: function (fName: string) {
-        const capitalized = fName.charAt(0).toUpperCase() + fName.slice(1);
-        console.log(fName, capitalized);
-        return fName === capitalized;
+      validate: {
+        validator: function (fName: string) {
+          const capitalized =
+            fName.charAt(0).toLocaleUpperCase() + fName.slice(1);
+          return fName === capitalized;
+        },
+        message: '{VALUE} is not in capitalize format',
       },
     },
     middleName: {
