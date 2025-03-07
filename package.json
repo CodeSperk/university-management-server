@@ -4,8 +4,14 @@
   "description": "The project is to get mastered in express, mongoose, typescript & esLint etc",
   "main": "index.js",
   "scripts": {
+    "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "start:prod": "node ./dist/server.js",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src --fix",
+    "lint:fix": "npx eslint src --fix",
+    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
+    "prettier:fix": "npx prettier --write src"
   },
   "repository": {
     "type": "git",
@@ -29,9 +35,18 @@
     "mongoose": "^8.12.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.21.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.9",
-    "typescript": "^5.8.2"
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.1.1",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.0"
   }
 }
