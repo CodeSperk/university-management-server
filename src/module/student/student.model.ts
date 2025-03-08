@@ -190,6 +190,25 @@ const studentSchema = new Schema<TStudent, TStudentModel>({
   },
 });
 
+//query middleware to get only undeleated data
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// studentSchema.pre('findOne', function (next) {
+//   this.findOne({ isDeleted: { $ne: true } });
+//   next();
+// });
+
+//aggregate middleware to protect deleted data
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({
+    $match: { isDeleted: { $ne: true } },
+  });
+  next();
+});
+
 //Pre Middlewar: encript password using bcrypt
 studentSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
