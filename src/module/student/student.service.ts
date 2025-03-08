@@ -6,14 +6,6 @@ const createStudentIntoDB = async (payload: TStudent) => {
     throw new Error('User is already exists');
   }
   const result = await Student.create(payload);
-
-  // const student = new Student(payload);
-
-  // if (await student.isUserExists(payload.id)) {
-  //   throw new Error('User is already exists');
-  // }
-  // const result = await student.save();
-
   return result;
 };
 
@@ -27,8 +19,14 @@ const getStudentByIdFromDB = async (id: string) => {
   return result;
 };
 
+const deleteStudentFromDB = async (id: string) => {
+  const result = await Student.updateOne({ id }, { isDeleted: true });
+  return result;
+};
+
 export const StudentServices = {
   createStudentIntoDB,
   getStudentsFromDB,
   getStudentByIdFromDB,
+  deleteStudentFromDB,
 };

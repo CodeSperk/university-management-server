@@ -76,6 +76,7 @@ const localGuardianValidationSchema = z.object({
 
 const studentValidationSchema = z.object({
   id: z.string().trim(),
+  password: z.string().min(6, { message: 'Minimum 6 character required' }),
   name: userNameValidationSchema,
   gender: z.enum(['male', 'female'], {
     message: 'Gender must be either male or female',
@@ -118,6 +119,7 @@ const studentValidationSchema = z.object({
     .url({ message: 'Invalid profile image URL' })
     .optional(),
   isActive: z.enum(['active', 'blocked']).default('active'),
+  idDeleted: z.boolean().default(false),
 });
 
 export { studentValidationSchema };

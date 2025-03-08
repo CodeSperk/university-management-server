@@ -3,10 +3,11 @@ import {
   TGuardian,
   TLocalGuardian,
   TStudent,
-  TStudentMethods,
   TStudentModel,
   TUserName,
 } from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -102,6 +103,9 @@ const studentSchema = new Schema<TStudent, TStudentModel>({
     unique: [true, 'Student ID must be unique'],
     required: [true, 'Student ID is required'],
   },
+  password: {
+    type: String,
+  },
   name: {
     type: userNameSchema,
     required: [true, 'Name is required'],
@@ -180,6 +184,27 @@ const studentSchema = new Schema<TStudent, TStudentModel>({
     },
     default: 'active',
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+//Pre Middlewar: encript password using bcrypt
+studentSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_round),
+  );
+  next();
+});
+
+//post middleware to make encrypted password empty
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
 });
 
 //custom static method
@@ -187,11 +212,5 @@ studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
-
-// //Custom instance method
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 export const Student = model<TStudent, TStudentModel>('Student', studentSchema);
