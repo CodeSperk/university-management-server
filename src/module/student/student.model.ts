@@ -6,8 +6,6 @@ import {
   TStudentModel,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -97,98 +95,97 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
   { _id: false },
 );
 
-const studentSchema = new Schema<TStudent, TStudentModel>({
-  id: {
-    type: String,
-    unique: [true, 'Student ID must be unique'],
-    required: [true, 'Student ID is required'],
-  },
-  password: {
-    type: String,
-  },
-  name: {
-    type: userNameSchema,
-    required: [true, 'Name is required'],
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female'],
-      message: 'Gender must be either "male" or "female"',
+const studentSchema = new Schema<TStudent, TStudentModel>(
+  {
+    id: {
+      type: String,
+      unique: [true, 'Student ID must be unique'],
+      required: [true, 'Student ID is required'],
     },
-    required: [true, 'Gender is required'],
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: [true, 'Email must be unique'],
-    match: [/\S+@\S+\.\S+/, 'Please provide a valid email address'],
-  },
-  dateOfBirth: {
-    type: String,
-    validate: {
-      validator: function (v: string) {
-        return /^\d{4}-\d{2}-\d{2}$/.test(v); // Ensure date is in YYYY-MM-DD format
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User is is required'],
+      unique: true,
+      ref: 'User',
+    },
+    name: {
+      type: userNameSchema,
+      required: [true, 'Name is required'],
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female'],
+        message: 'Gender must be either "male" or "female"',
       },
-      message: 'Date of birth must be in YYYY-MM-DD format',
+      required: [true, 'Gender is required'],
     },
-  },
-  contactNo: {
-    type: String,
-    required: [true, 'Contact number is required'],
-  },
-  emergencyContactNo: {
-    type: String,
-    required: [true, 'Emergency contact number is required'],
-  },
-  bloodGroup: {
-    type: String,
-    enum: {
-      values: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
-      message:
-        'Blood group must be one of the following: A+, A-, B+, B-, O+, O-, AB+, AB-',
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: [true, 'Email must be unique'],
+      match: [/\S+@\S+\.\S+/, 'Please provide a valid email address'],
     },
-  },
-  presentAddress: {
-    type: String,
-    required: [true, 'Present address is required'],
-    trim: true,
-  },
-  permanentAddress: {
-    type: String,
-    required: [true, 'Permanent address is required'],
-    trim: true,
-  },
-  guardian: {
-    type: guardianSchema,
-    required: [true, 'Guardian information is required'],
-  },
-  localGuardian: {
-    type: localGuardianSchema,
-    required: [true, 'Local guardian information is required'],
-  },
-  profileImg: {
-    type: String,
-    validate: {
-      validator: function (v: string) {
-        return /\.(jpg|jpeg|png|gif)$/.test(v); // Allow only image file extensions
+    dateOfBirth: {
+      type: String,
+      validate: {
+        validator: function (v: string) {
+          return /^\d{4}-\d{2}-\d{2}$/.test(v); // Ensure date is in YYYY-MM-DD format
+        },
+        message: 'Date of birth must be in YYYY-MM-DD format',
       },
-      message: 'Profile image must be a valid image file (jpg, jpeg, png, gif)',
+    },
+    contactNo: {
+      type: String,
+      required: [true, 'Contact number is required'],
+    },
+    emergencyContactNo: {
+      type: String,
+      required: [true, 'Emergency contact number is required'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: {
+        values: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+        message:
+          'Blood group must be one of the following: A+, A-, B+, B-, O+, O-, AB+, AB-',
+      },
+    },
+    presentAddress: {
+      type: String,
+      required: [true, 'Present address is required'],
+      trim: true,
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'Permanent address is required'],
+      trim: true,
+    },
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'Guardian information is required'],
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: [true, 'Local guardian information is required'],
+    },
+    profileImg: {
+      type: String,
+      validate: {
+        validator: function (v: string) {
+          return /\.(jpg|jpeg|png|gif)$/.test(v); // Allow only image file extensions
+        },
+        message:
+          'Profile image must be a valid image file (jpg, jpeg, png, gif)',
+      },
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
-  isActive: {
-    type: String,
-    enum: {
-      values: ['active', 'blocked'],
-      message: 'Status must be either "active" or "blocked"',
-    },
-    default: 'active',
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { toJSON: { virtuals: true } },
+);
 
 //query middleware to get only undeleated data
 studentSchema.pre('find', function (next) {
@@ -206,23 +203,6 @@ studentSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({
     $match: { isDeleted: { $ne: true } },
   });
-  next();
-});
-
-//Pre Middlewar: encript password using bcrypt
-studentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_round),
-  );
-  next();
-});
-
-//post middleware to make encrypted password empty
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
   next();
 });
 
