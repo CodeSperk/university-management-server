@@ -20,10 +20,6 @@ const updateDepartmentIntoDB = async (
   id: string,
   payload: Partial<TDepartment>,
 ) => {
-  const isDeptExists = await Department.findById(id);
-  if (!isDeptExists) {
-    throw new Error(`Department is not Found with the id  ${id}`);
-  }
   const result = await Department.findByIdAndUpdate({ _id: id }, payload, {
     new: true,
   });
