@@ -18,4 +18,12 @@ const departmentSchema = new Schema<TDepartment>(
   },
 );
 
+departmentSchema.pre('save', async function (next) {
+  const isDepartmentExists = await Department.findOne({ name: this.name });
+  if (isDepartmentExists) {
+    throw new Error(`${this.name} is already exists.`);
+  }
+  next();
+});
+
 export const Department = model<TDepartment>('Department', departmentSchema);
