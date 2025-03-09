@@ -4,11 +4,11 @@ import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData
   const userData: Partial<TUser> = {};
-  userData.id = '2030010003';
-  userData.password = password || (config.default_pass as string);
+  userData.id = '2030010002';
+  userData.password = payload.password || (config.default_pass as string);
   userData.role = 'student';
 
   const newUser = await User.create(userData);
