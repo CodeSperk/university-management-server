@@ -182,6 +182,10 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
           'Profile image must be a valid image file (jpg, jpeg, png, gif)',
       },
     },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
     isDeleted: {
       type: Boolean,
       default: false,

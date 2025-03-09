@@ -119,6 +119,7 @@ const createStudentValidationSchema = z.object({
       .trim()
       .url({ message: 'Invalid profile image URL' })
       .optional(),
+    admissionSemester: z.string(),
     idDeleted: z.boolean().default(false),
   }),
 });
