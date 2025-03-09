@@ -1,57 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.service';
+import catchAsync from '../../utils/catchAsync';
 
-const getStudents = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const result = await StudentServices.getStudentsFromDB();
-    res.status(200).json({
-      success: true,
-      message: 'Student created successfully',
-      data: result,
-    });
-  } catch (err: any) {
-    next(err);
-  }
-};
+const getStudents = catchAsync(async (req, res) => {
+  const result = await StudentServices.getStudentsFromDB();
+  res.status(200).json({
+    success: true,
+    message: 'Student created successfully',
+    data: result,
+  });
+});
 
-const getStudentById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { studentId } = req.params;
-    const result = await StudentServices.getStudentByIdFromDB(studentId);
+const getStudentById = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const result = await StudentServices.getStudentByIdFromDB(studentId);
 
-    res.status(200).json({
-      success: true,
-      message: 'Student created successfully',
-      data: result,
-    });
-  } catch (err: any) {
-    next(err);
-  }
-};
+  res.status(200).json({
+    success: true,
+    message: 'Student created successfully',
+    data: result,
+  });
+});
 
-const deleteStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { studentId } = req.params;
-    const result = await StudentServices.deleteStudentFromDB(studentId);
+const deleteStudent = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const result = await StudentServices.deleteStudentFromDB(studentId);
 
-    res.status(200).json({
-      success: true,
-      message: 'Student has been deleted successfully',
-      data: result,
-    });
-  } catch (err: any) {
-    next(err);
-  }
-};
+  res.status(200).json({
+    success: true,
+    message: 'Student has been deleted successfully',
+    data: result,
+  });
+});
 
 export const StudentControllers = {
   getStudents,
