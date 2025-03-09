@@ -19,7 +19,7 @@ const getStudentsFromDB = async () => {
 };
 
 const getStudentByIdFromDB = async (id: string) => {
-  const result = await Student.findById(id)
+  const result = await Student.findOne({ id })
     .populate('user')
     .populate('admissionSemester')
     .populate({
