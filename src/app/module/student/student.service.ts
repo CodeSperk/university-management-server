@@ -6,8 +6,35 @@ import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getStudentsFromDB = async () => {
-  const result = await Student.find()
+const getStudentsFromDB = async (query: Record<string, unknown>) => {
+  // {email : {$regex: query.searchTerm, $options: "i" }}
+  // {presentAddress : {$regex: query.searchTerm, $options: "i" }}
+  // {"name.firstName" : {$regex: query.searchTerm, $options: "i" }}
+  //searching
+  const queryObj = { ...query }; //copy of query
+
+  //searching
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+
+  const searchQuery = Student.find({
+    $or: studentSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  });
+
+  //filtering
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  excludeFields.forEach((el) => delete queryObj[el]);
+
+  console.log('base query: ', query, 'copied query : ', queryObj);
+
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate('user')
     .populate('admissionSemester')
     .populate({
@@ -16,7 +43,45 @@ const getStudentsFromDB = async () => {
         path: 'faculty',
       },
     });
-  return result;
+
+  //sorting
+  let sort = '-createdAt';
+  console.log(query.sort);
+  if (query.sort) {
+    sort = (query?.sort as string)?.split(',').join(' ');
+    console.log(sort);
+  }
+
+  const sortQuery = filterQuery.sort(sort);
+
+  //limiting & pagination
+  let limit = 10;
+  let page = 1;
+  let skip = 0;
+  if (query?.limit) {
+    limit = Number(query?.limit);
+  }
+
+  if (query?.page) {
+    page = Number(query?.page);
+    skip = (page - 1) * limit;
+  }
+
+  const paginateQuery = sortQuery.skip(skip);
+
+  const limitQuery = paginateQuery.limit(limit);
+
+  //field limiting
+  let fields = '-__v'; //default to not selecting
+  if (query?.fields) {
+    //{fields: "name,email,id"}
+    fields = (query?.fields as string)
+      .split(',')
+      .map((field) => field.trim())
+      .join(' ');
+  }
+  const fieldQuery = await limitQuery.select(fields);
+  return fieldQuery;
 };
 
 const getStudentByIdFromDB = async (id: string) => {
