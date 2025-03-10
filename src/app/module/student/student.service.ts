@@ -5,83 +5,31 @@ import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableFields } from './students.constant';
 
 const getStudentsFromDB = async (query: Record<string, unknown>) => {
-  // {email : {$regex: query.searchTerm, $options: "i" }}
-  // {presentAddress : {$regex: query.searchTerm, $options: "i" }}
-  // {"name.firstName" : {$regex: query.searchTerm, $options: "i" }}
-  //searching
-  const queryObj = { ...query }; //copy of query
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('user')
+      .populate('admissionSemester')
+      .populate({
+        path: 'department',
+        populate: {
+          path: 'faculty',
+        },
+      }),
+    query,
+  )
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  //searching
-  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+  const result = await studentQuery.modelQuery;
 
-  let searchTerm = '';
-  if (query?.searchTerm) {
-    searchTerm = query?.searchTerm as string;
-  }
-
-  const searchQuery = Student.find({
-    $or: studentSearchableFields.map((field) => ({
-      [field]: { $regex: searchTerm, $options: 'i' },
-    })),
-  });
-
-  //filtering
-  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-  excludeFields.forEach((el) => delete queryObj[el]);
-
-  console.log('base query: ', query, 'copied query : ', queryObj);
-
-  const filterQuery = searchQuery
-    .find(queryObj)
-    .populate('user')
-    .populate('admissionSemester')
-    .populate({
-      path: 'department',
-      populate: {
-        path: 'faculty',
-      },
-    });
-
-  //sorting
-  let sort = '-createdAt';
-  console.log(query.sort);
-  if (query.sort) {
-    sort = (query?.sort as string)?.split(',').join(' ');
-    console.log(sort);
-  }
-
-  const sortQuery = filterQuery.sort(sort);
-
-  //limiting & pagination
-  let limit = 10;
-  let page = 1;
-  let skip = 0;
-  if (query?.limit) {
-    limit = Number(query?.limit);
-  }
-
-  if (query?.page) {
-    page = Number(query?.page);
-    skip = (page - 1) * limit;
-  }
-
-  const paginateQuery = sortQuery.skip(skip);
-
-  const limitQuery = paginateQuery.limit(limit);
-
-  //field limiting
-  let fields = '-__v'; //default to not selecting
-  if (query?.fields) {
-    //{fields: "name,email,id"}
-    fields = (query?.fields as string)
-      .split(',')
-      .map((field) => field.trim())
-      .join(' ');
-  }
-  const fieldQuery = await limitQuery.select(fields);
-  return fieldQuery;
+  return result;
 };
 
 const getStudentByIdFromDB = async (id: string) => {
@@ -100,30 +48,29 @@ const getStudentByIdFromDB = async (id: string) => {
 const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
   const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
-  const modifiedUpdatedData: Record<string> = { ...remainingStudentData };
+  const modifiedUpdatedData: Record<string, any> = { ...remainingStudentData };
 
   if (name && Object.keys(name).length) {
     for (const [key, value] of Object.entries(name)) {
-      modifiedUpdatedData[`name${key}`] = value;
+      modifiedUpdatedData[`name.${key}`] = value;
     }
   }
   if (guardian && Object.keys(guardian).length) {
     for (const [key, value] of Object.entries(guardian)) {
-      modifiedUpdatedData[`guardian${key}`] = value;
+      modifiedUpdatedData[`guardian.${key}`] = value;
     }
   }
 
   if (localGuardian && Object.keys(localGuardian).length) {
     for (const [key, value] of Object.entries(localGuardian)) {
-      modifiedUpdatedData[`localGuardian${key}`] = value;
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
     }
   }
-  console.log(modifiedUpdatedData);
   const result = await Student.findOneAndUpdate(
     {
-      id,
+      _id: new mongoose.Types.ObjectId(id),
     },
-    modifiedUpdatedData,
+    { $set: modifiedUpdatedData },
     { new: true, runValidators: true },
   );
 
