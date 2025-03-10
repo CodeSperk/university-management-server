@@ -20,13 +20,13 @@ const departmentSchema = new Schema<TDepartment>(
   },
 );
 
-departmentSchema.pre('save', async function (next) {
-  const isDepartmentExists = await Department.findOne({ name: this.name });
-  if (isDepartmentExists) {
-    throw new AppError(httpStatus.NOT_FOUND, `${this.name} is already exists.`);
-  }
-  next();
-});
+// departmentSchema.pre('save', async function (next) {
+//   const isDepartmentExists = await Department.findOne({ name: this.name });
+//   if (isDepartmentExists) {
+//     throw new AppError(httpStatus.NOT_FOUND, `${this.name} is already exists.`);
+//   }
+//   next();
+// });
 
 departmentSchema.pre('findOneAndUpdate', async function (next) {
   const query = this.getQuery();
