@@ -46,4 +46,30 @@ const generateStudentId = async (payload: TAcademicSemester) => {
   return incrementId;
 };
 
-export default generateStudentId;
+//find last user id;
+const findLastFacultyMemberId = async () => {
+  const lastFacultyMember = await User.findOne(
+    {
+      role: 'faculty',
+    },
+    {
+      id: 1,
+      _id: 0,
+    },
+  )
+    .sort({ createdAt: -1 })
+    .lean();
+  return lastFacultyMember?.id ? lastFacultyMember.id.slice(2) : undefined;
+};
+
+const generateFacultyMemberId = async () => {
+  const currentId = (await findLastFacultyMemberId()) || '0';
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  incrementId = `F-${incrementId}`;
+  return incrementId;
+};
+
+export const idGenerator = {
+  generateStudentId,
+  generateFacultyMemberId,
+};

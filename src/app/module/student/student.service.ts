@@ -68,7 +68,7 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
   }
   const result = await Student.findOneAndUpdate(
     {
-      _id: new mongoose.Types.ObjectId(id),
+      id,
     },
     { $set: modifiedUpdatedData },
     { new: true, runValidators: true },

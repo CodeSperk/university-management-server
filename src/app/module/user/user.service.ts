@@ -6,9 +6,11 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import generateStudentId from './user.utils';
+import generateStudentId, { idGenerator } from './user.utils';
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
+import { TFacultyMember } from '../FacultyMembers/fMember.interface';
+import { FacultyMember } from '../FacultyMembers/fMember.model';
 
 const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData
@@ -22,7 +24,7 @@ const createStudentIntoDB = async (payload: TStudent) => {
     throw new Error('Academic Semester not found');
   }
 
-  const userId = await generateStudentId(admissionSemester);
+  const userId = await idGenerator.generateStudentId(admissionSemester);
   userData.id = userId;
 
   userData.password = payload.password || (config.default_pass as string);
@@ -63,6 +65,51 @@ const createStudentIntoDB = async (payload: TStudent) => {
   }
 };
 
+const createFacultyMemberIntoDB = async (payload: TFacultyMember) => {
+  //create user
+  const userData: Partial<TUser> = {};
+
+  userData.id = await idGenerator.generateFacultyMemberId();
+  userData.password = payload.password;
+  userData.role = 'faculty';
+
+  //start-session
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    //create new User : transaction-1
+    const newUser = await User.create([userData], { session });
+
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
+    //create new Faculty Member : Transaction-2
+    const facultyMemberData = payload;
+    facultyMemberData.id = newUser[0].id;
+    facultyMemberData.user = newUser[0]._id;
+
+    const newFacultyMember = await FacultyMember.create([facultyMemberData], {
+      session,
+    });
+
+    if (!newFacultyMember.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newFacultyMember;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err.message);
+  }
+};
+
 export const UserServices = {
   createStudentIntoDB,
+  createFacultyMemberIntoDB,
 };
