@@ -25,8 +25,8 @@ const updateFacultyIntoDB = async (id: string, payload: TFacultyMember) => {
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
-  const result = await FacultyMember.findOneAndUpdate(
-    { id: id },
+  const result = await FacultyMember.findByIdAndUpdate(
+    id,
     {
       $set: modifiedUpdatedData,
     },
@@ -46,8 +46,8 @@ const deleteFacultyFromDB = async (id: string) => {
     session.startTransaction();
 
     //delete user: transaction-1
-    const deleteUser = await User.findOneAndUpdate(
-      { id: id },
+    const deleteUser = await User.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
@@ -56,8 +56,8 @@ const deleteFacultyFromDB = async (id: string) => {
     }
 
     //delete faculty: transaction-2
-    const deletedFaculty = await FacultyMember.findOneAndUpdate(
-      { id: id },
+    const deletedFaculty = await FacultyMember.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
@@ -68,7 +68,7 @@ const deleteFacultyFromDB = async (id: string) => {
     await session.commitTransaction();
     await session.endSession();
     return deletedFaculty;
-  } catch (err) {
+  } catch {
     await session.abortTransaction();
     await session.endSession();
     throw new Error('User delete error');
