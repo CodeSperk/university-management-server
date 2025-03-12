@@ -33,7 +33,7 @@ const getStudentsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getStudentByIdFromDB = async (id: string) => {
-  const result = await Student.findOne({ id })
+  const result = await Student.findById(id)
     .populate('user')
     .populate('admissionSemester')
     .populate({
@@ -66,10 +66,8 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
       modifiedUpdatedData[`localGuardian.${key}`] = value;
     }
   }
-  const result = await Student.findOneAndUpdate(
-    {
-      id,
-    },
+  const result = await Student.findByIdAndUpdate(
+    id,
     { $set: modifiedUpdatedData },
     { new: true, runValidators: true },
   );
@@ -85,8 +83,8 @@ const deleteStudentFromDB = async (id: string) => {
     session.startTransaction();
 
     //transaction -1
-    const deletedStudent = await Student.findOneAndUpdate(
-      { id },
+    const deletedStudent = await Student.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       {
         new: true,
@@ -98,8 +96,8 @@ const deleteStudentFromDB = async (id: string) => {
     }
 
     //transaction-2
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
+    const deletedUser = await User.findByIdAndUpdate(
+      deletedStudent.user,
       {
         isDeleted: true,
       },

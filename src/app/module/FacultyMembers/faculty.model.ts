@@ -70,11 +70,9 @@ const facultyMemberSchema = new Schema<TFacultyMember>(
     profileImage: {
       type: String,
     },
-    academicFaculty: {
-      type: String,
-    },
     academicDepartment: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Department',
     },
     isDeleted: {
       type: Boolean,

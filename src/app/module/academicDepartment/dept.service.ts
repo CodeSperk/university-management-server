@@ -20,7 +20,7 @@ const updateDepartmentIntoDB = async (
   id: string,
   payload: Partial<TDepartment>,
 ) => {
-  const result = await Department.findByIdAndUpdate({ _id: id }, payload, {
+  const result = await Department.findByIdAndUpdate(id, payload, {
     new: true,
   });
   return result;

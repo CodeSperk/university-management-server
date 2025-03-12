@@ -11,6 +11,7 @@ import httpStatus from 'http-status';
 import { TFacultyMember } from '../FacultyMembers/faculty.interface';
 import { FacultyMember } from '../FacultyMembers/faculty.model';
 import { idGenerator } from './user.utils';
+import { Department } from '../academicDepartment/dept.model';
 
 const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData
@@ -72,6 +73,14 @@ const createFacultyMemberIntoDB = async (payload: TFacultyMember) => {
   userData.id = await idGenerator.generateFacultyMemberId();
   userData.password = payload.password;
   userData.role = 'faculty';
+
+  //find Academic Departmet info
+  const isDepartmentExist = await Department.findById(
+    payload.academicDepartment,
+  );
+  if (!isDepartmentExist) {
+    throw new AppError(400, 'Academic Department is not found');
+  }
 
   //start-session
   const session = await mongoose.startSession();
