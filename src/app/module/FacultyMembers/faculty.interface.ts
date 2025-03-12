@@ -22,5 +22,5 @@ export type TFacultyMember = {
   profileImage?: string;
   academicFaculty: string;
   academicDepartment: string;
-  isDeleated: boolean;
+  isDeleted: boolean;
 };

@@ -6,11 +6,11 @@ import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import generateStudentId, { idGenerator } from './user.utils';
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
-import { TFacultyMember } from '../FacultyMembers/fMember.interface';
-import { FacultyMember } from '../FacultyMembers/fMember.model';
+import { TFacultyMember } from '../FacultyMembers/faculty.interface';
+import { FacultyMember } from '../FacultyMembers/faculty.model';
+import { idGenerator } from './user.utils';
 
 const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData

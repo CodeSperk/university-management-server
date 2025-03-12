@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { TFacultyMember, TFacultyMemberName } from './fMember.interface';
+import { TFacultyMember, TFacultyMemberName } from './faculty.interface';
 
 const facultyMemberNameSchema = new Schema<TFacultyMemberName>(
   {
@@ -76,7 +76,7 @@ const facultyMemberSchema = new Schema<TFacultyMember>(
     academicDepartment: {
       type: String,
     },
-    isDeleated: {
+    isDeleted: {
       type: Boolean,
       default: false,
     },
