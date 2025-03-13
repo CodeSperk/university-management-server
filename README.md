@@ -6,7 +6,7 @@ This repository contains the backend server for the University Management System
 
 Below is the Entity-Relationship (ER) Diagram representing the system's database structure:
 
-![ER Diagram](er-diagram.png)
+![ER Diagram](./public/er-diagram.png)
 
 
 > Replace `path/to/er-diagram.png` with the actual path to your ER diagram image.
