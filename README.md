@@ -2,7 +2,7 @@
 
 This repository contains the backend server for the University Management System, handling various functionalities such as student records, courses, faculty management, and more.
 
-## ER Diagram
+## [ER Diagram](https://lucid.app/lucidchart/640c92ff-6cc3-4880-a22e-c1692da5b9ea/edit?beaconFlowId=44A44E25B2BBF212&invitationId=inv_6ddd518b-cac4-4a48-9ddc-7d4031fbd241&page=0_0#)
 
 Below is the Entity-Relationship (ER) Diagram representing the system's database structure:
 
