@@ -1,8 +1,13 @@
+import AppError from '../../error/AppError';
 import catchAsync from '../../utils/catchAsync';
 import { AdminServices } from './admin.service';
+import httpStatus from 'http-status';
 
 const getAdmins = catchAsync(async (req, res) => {
   const result = await AdminServices.getAdminsFromDB(req.query);
+  if (result.length < 1) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No admin Found');
+  }
   res.status(200).json({
     success: true,
     message: 'Students',
@@ -13,6 +18,10 @@ const getAdmins = catchAsync(async (req, res) => {
 const getAdminById = catchAsync(async (req, res) => {
   const { adminId } = req.params;
   const result = await AdminServices.getAdminByIdFromDB(adminId);
+
+  if (result === null) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Admin not Found');
+  }
 
   res.status(200).json({
     success: true,
