@@ -114,7 +114,13 @@ const adminSchema = new Schema<TAdmin>(
       default: false,
     },
   },
-  { timestamps: true },
+  { timestamps: true, toJSON: { virtuals: true } },
 );
+
+//to get fullName
+adminSchema.virtual('fullName').get(function () {
+  const result = `${this.name.firstName} ${this.name?.middleName ? this.name.middleName + ' ' : ''}${this.name.lastName}`;
+  return result;
+});
 
 export const Admin = model<TAdmin>('Admin', adminSchema);

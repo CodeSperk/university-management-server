@@ -6,7 +6,7 @@ import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 import QueryBuilder from '../../builder/QueryBuilder';
-import { studentSearchableFields } from './students.constant';
+import { studentSearchableFields } from './student.constant';
 
 const getStudentsFromDB = async (query: Record<string, unknown>) => {
   const studentQuery = new QueryBuilder(

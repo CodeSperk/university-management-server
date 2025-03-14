@@ -122,7 +122,6 @@ const createFacultyMemberIntoDB = async (payload: TFacultyMember) => {
 const createAdminIntoDB = async (payload: TFacultyMember) => {
   //create user
   const userData: Partial<TUser> = {};
-  console.log(await idGenerator.generateAdminId());
 
   userData.id = await idGenerator.generateAdminId();
   userData.password = payload.password;
