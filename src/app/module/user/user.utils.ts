@@ -47,29 +47,31 @@ const generateStudentId = async (payload: TAcademicSemester) => {
 };
 
 //find last user id;
-const findLastFacultyMemberId = async () => {
-  const lastFacultyMember = await User.findOne(
-    {
-      role: 'faculty',
-    },
-    {
-      id: 1,
-      _id: 0,
-    },
-  )
+const findLastUserId = async (role: string) => {
+  const lastUser = await User.findOne({ role: role }, { id: 1, _id: 0 })
     .sort({ createdAt: -1 })
     .lean();
-  return lastFacultyMember?.id ? lastFacultyMember.id.slice(2) : undefined;
+  return lastUser?.id?.slice(2) || '0000';
 };
 
 const generateFacultyMemberId = async () => {
-  const currentId = (await findLastFacultyMemberId()) || '0';
+  const currentId = (await findLastUserId('faculty')) || '0';
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
   incrementId = `F-${incrementId}`;
+
+  return incrementId;
+};
+
+const generateAdminId = async () => {
+  const currentId = (await findLastUserId('admin')) || '0000';
+  const numericId = Number(currentId);
+  let incrementId = (numericId + 1).toString().padStart(4, '0');
+  incrementId = `A-${incrementId}`;
   return incrementId;
 };
 
 export const idGenerator = {
   generateStudentId,
   generateFacultyMemberId,
+  generateAdminId,
 };

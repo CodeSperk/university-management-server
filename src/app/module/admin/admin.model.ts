@@ -1,0 +1,120 @@
+import { model, Schema } from 'mongoose';
+import { TAdmin, TAdminName } from './admin.interface';
+import { BloodGroup, Gender } from './admin.constants';
+
+const adminNameSchema = new Schema<TAdminName>(
+  {
+    firstName: {
+      type: String,
+      required: [true, 'First name is required'],
+      trim: true,
+      validate: {
+        validator: function (fName: string) {
+          const capitalized =
+            fName.charAt(0).toLocaleUpperCase() + fName.slice(1);
+          return fName === capitalized;
+        },
+        message: '{VALUE} is not in capitalize format',
+      },
+    },
+    middleName: {
+      type: String,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Last name is required'],
+      trim: true,
+    },
+  },
+  { _id: false },
+);
+
+const adminSchema = new Schema<TAdmin>(
+  {
+    id: {
+      type: String,
+      unique: [true, 'Student ID must be unique'],
+      required: [true, 'Student ID is required'],
+    },
+    password: {
+      type: String,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User is is required'],
+      unique: true,
+      ref: 'User',
+    },
+    name: {
+      type: adminNameSchema,
+      required: [true, 'Name is required'],
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: Gender,
+        message: 'Gender must be either "male" or "female"',
+      },
+      required: [true, 'Gender is required'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: [true, 'Email must be unique'],
+      match: [/\S+@\S+\.\S+/, 'Please provide a valid email address'],
+    },
+    dateOfBirth: {
+      type: String,
+      validate: {
+        validator: function (v: string) {
+          return /^\d{4}-\d{2}-\d{2}$/.test(v); // Ensure date is in YYYY-MM-DD format
+        },
+        message: 'Date of birth must be in YYYY-MM-DD format',
+      },
+    },
+    contactNo: {
+      type: String,
+      required: [true, 'Contact number is required'],
+    },
+    emergencyContactNo: {
+      type: String,
+      required: [true, 'Emergency contact number is required'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: {
+        values: BloodGroup,
+        message:
+          'Blood group must be one of the following: A+, A-, B+, B-, O+, O-, AB+, AB-',
+      },
+    },
+    presentAddress: {
+      type: String,
+      required: [true, 'Present address is required'],
+      trim: true,
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'Permanent address is required'],
+      trim: true,
+    },
+    profileImg: {
+      type: String,
+      validate: {
+        validator: function (v: string) {
+          return /\.(jpg|jpeg|png|gif)$/.test(v); // Allow only image file extensions
+        },
+        message:
+          'Profile image must be a valid image file (jpg, jpeg, png, gif)',
+      },
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true },
+);
+
+export const Admin = model<TAdmin>('Admin', adminSchema);
