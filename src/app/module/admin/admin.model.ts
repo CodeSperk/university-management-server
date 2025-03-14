@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { TAdmin, TAdminName } from './admin.interface';
+import { AdminModel, TAdmin, TAdminName } from './admin.interface';
 import { BloodGroup, Gender } from './admin.constants';
 
 const adminNameSchema = new Schema<TAdminName>(
@@ -30,7 +30,7 @@ const adminNameSchema = new Schema<TAdminName>(
   { _id: false },
 );
 
-const adminSchema = new Schema<TAdmin>(
+const adminSchema = new Schema<TAdmin, AdminModel>(
   {
     id: {
       type: String,
@@ -123,4 +123,26 @@ adminSchema.virtual('fullName').get(function () {
   return result;
 });
 
-export const Admin = model<TAdmin>('Admin', adminSchema);
+// filter out deleted documents
+adminSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+adminSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+adminSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+//checking if user is already exist!
+adminSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Admin.findOne({ id });
+  return existingUser;
+};
+
+export const Admin = model<TAdmin, AdminModel>('Admin', adminSchema);
