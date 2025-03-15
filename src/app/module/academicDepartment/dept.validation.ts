@@ -6,7 +6,7 @@ const createStudentValidationSchema = z.object({
       invalid_type_error: 'Department name must be string',
       required_error: 'Dept. is a must',
     }),
-    faculty: z.string({
+    academicFaculty: z.string({
       required_error: 'Faculty is required',
     }),
   }),
@@ -20,7 +20,7 @@ const updateStudentValidationSchema = z.object({
         required_error: 'Dept. is a must',
       })
       .optional(),
-    faculty: z
+    academicFaculty: z
       .string({
         required_error: 'Faculty is required',
       })

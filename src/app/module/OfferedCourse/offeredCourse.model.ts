@@ -16,7 +16,7 @@ const offeredCourseSchema = new Schema<TOfferedCourse>(
     academicFaculty: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'Faculty',
+      ref: 'AcademicFaculty',
     },
     academicDepartment: {
       type: Schema.Types.ObjectId,
@@ -31,7 +31,7 @@ const offeredCourseSchema = new Schema<TOfferedCourse>(
     faculty: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'FacultyMember',
+      ref: 'Faculty',
     },
     maxCapacity: {
       type: Number,

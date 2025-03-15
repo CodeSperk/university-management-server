@@ -75,52 +75,52 @@ const createLocalGuardianValidationSchema = z.object({
 
 const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z.string({
-      invalid_type_error: 'Password must be string',
-    }),
-    name: createUserNameValidationSchema,
-    gender: z.enum(['male', 'female'], {
-      message: 'Gender must be either male or female',
-    }),
-    email: z.string().trim().email({ message: 'Invalid email format' }),
-    dateOfBirth: z
-      .string()
-      .trim()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, {
-        message: 'Date of Birth must be in YYYY-MM-DD format',
-      })
-      .optional(),
-    contactNo: z
-      .string()
-      .trim()
-      .regex(/^\d{10,15}$/, {
-        message: 'Contact number must be between 10 to 15 digits',
+    password: z.string({ invalid_type_error: 'Password must be string' }),
+    student: z.object({
+      name: createUserNameValidationSchema,
+      gender: z.enum(['male', 'female'], {
+        message: 'Gender must be either male or female',
       }),
-    emergencyContactNo: z
-      .string()
-      .trim()
-      .regex(/^\d{10,15}$/, {
-        message: 'Emergency contact number must be between 10 to 15 digits',
+      email: z.string().trim().email({ message: 'Invalid email format' }),
+      dateOfBirth: z
+        .string()
+        .trim()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, {
+          message: 'Date of Birth must be in YYYY-MM-DD format',
+        })
+        .optional(),
+      contactNo: z
+        .string()
+        .trim()
+        .regex(/^\d{10,15}$/, {
+          message: 'Contact number must be between 10 to 15 digits',
+        }),
+      emergencyContactNo: z
+        .string()
+        .trim()
+        .regex(/^\d{10,15}$/, {
+          message: 'Emergency contact number must be between 10 to 15 digits',
+        }),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
+        .optional(),
+      presentAddress: z.string().trim().min(5, {
+        message: 'Present address must be at least 5 characters long',
       }),
-    bloodGroup: z
-      .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
-      .optional(),
-    presentAddress: z.string().trim().min(5, {
-      message: 'Present address must be at least 5 characters long',
+      permanentAddress: z.string().trim().min(5, {
+        message: 'Permanent address must be at least 5 characters long',
+      }),
+      guardian: createGuardianValidationSchema,
+      localGuardian: createLocalGuardianValidationSchema,
+      profileImg: z
+        .string()
+        .trim()
+        .url({ message: 'Invalid profile image URL' })
+        .optional(),
+      admissionSemester: z.string(),
+      department: z.string(),
+      idDeleted: z.boolean().default(false),
     }),
-    permanentAddress: z.string().trim().min(5, {
-      message: 'Permanent address must be at least 5 characters long',
-    }),
-    guardian: createGuardianValidationSchema,
-    localGuardian: createLocalGuardianValidationSchema,
-    profileImg: z
-      .string()
-      .trim()
-      .url({ message: 'Invalid profile image URL' })
-      .optional(),
-    admissionSemester: z.string(),
-    department: z.string(),
-    idDeleted: z.boolean().default(false),
   }),
 });
 

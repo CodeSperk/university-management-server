@@ -9,7 +9,6 @@ export type TAdminName = {
 export type TAdmin = {
   id: string;
   user: Types.ObjectId;
-  password: string;
   name: TAdminName;
   gender: 'male' | 'female';
   email: string;

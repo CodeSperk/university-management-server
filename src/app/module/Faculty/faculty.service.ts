@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import { User } from '../user/user.model';
-import { TFacultyMember } from './faculty.interface';
-import { FacultyMember } from './faculty.model';
+import { TFaculty } from './faculty.interface';
+import { Faculty } from './faculty.model';
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
 
 const getFacultiesFromDB = async () => {
-  const result = await FacultyMember.find();
+  const result = await Faculty.find();
   return result;
 };
 const getFacultiesByIdFromDB = async (id: string) => {
-  const result = await FacultyMember.findOne({ id });
+  const result = await Faculty.findById(id);
   return result;
 };
 
-const updateFacultyIntoDB = async (id: string, payload: TFacultyMember) => {
+const updateFacultyIntoDB = async (id: string, payload: TFaculty) => {
   const { name, ...remainingFacultyData } = payload;
 
   const modifiedUpdatedData: Record<string, any> = { ...remainingFacultyData };
@@ -25,7 +25,7 @@ const updateFacultyIntoDB = async (id: string, payload: TFacultyMember) => {
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
-  const result = await FacultyMember.findByIdAndUpdate(
+  const result = await Faculty.findByIdAndUpdate(
     id,
     {
       $set: modifiedUpdatedData,
@@ -45,24 +45,25 @@ const deleteFacultyFromDB = async (id: string) => {
     //start transaction
     session.startTransaction();
 
-    //delete user: transaction-1
-    const deleteUser = await User.findByIdAndUpdate(
-      id,
-      { isDeleted: true },
-      { new: true, session },
-    );
-    if (!deleteUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete User');
-    }
-
-    //delete faculty: transaction-2
-    const deletedFaculty = await FacultyMember.findByIdAndUpdate(
+    //delete faculty: transaction-1
+    const deletedFaculty = await Faculty.findByIdAndUpdate(
       id,
       { isDeleted: true },
       { new: true, session },
     );
     if (!deletedFaculty) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Faculty');
+    }
+
+    //delete user: transaction-2
+    const userId = deletedFaculty?.user;
+    const deleteUser = await User.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deleteUser) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete User');
     }
 
     await session.commitTransaction();

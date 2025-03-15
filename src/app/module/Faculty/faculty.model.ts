@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
-import { TFacultyMember, TFacultyMemberName } from './faculty.interface';
+import { TFaculty, TFacultyName } from './faculty.interface';
 
-const facultyMemberNameSchema = new Schema<TFacultyMemberName>(
+const facultyNameSchema = new Schema<TFacultyName>(
   {
     firstName: {
       type: String,
@@ -21,7 +21,7 @@ const facultyMemberNameSchema = new Schema<TFacultyMemberName>(
   { _id: false },
 );
 
-const facultyMemberSchema = new Schema<TFacultyMember>(
+const facultySchema = new Schema<TFaculty>(
   {
     id: {
       type: String,
@@ -32,7 +32,7 @@ const facultyMemberSchema = new Schema<TFacultyMember>(
       type: String,
     },
     name: {
-      type: facultyMemberNameSchema,
+      type: facultyNameSchema,
     },
     gender: {
       type: String,
@@ -47,9 +47,6 @@ const facultyMemberSchema = new Schema<TFacultyMember>(
     email: {
       type: String,
       unique: true,
-    },
-    password: {
-      type: String,
     },
     user: {
       type: Schema.Types.ObjectId,
@@ -82,7 +79,4 @@ const facultyMemberSchema = new Schema<TFacultyMember>(
   { timestamps: true },
 );
 
-export const FacultyMember = model<TFacultyMember>(
-  'FacultyMember',
-  facultyMemberSchema,
-);
+export const Faculty = model<TFaculty>('Faculty', facultySchema);

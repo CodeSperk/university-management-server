@@ -7,17 +7,21 @@ const router = express.Router();
 
 router.post(
   '/create-faculty',
-  validateRequest(AcademicFacultyValidations.createFacultyValidationSchema),
-  AcademicFacultyControllers.createFaculty,
+  validateRequest(
+    AcademicFacultyValidations.createAcademicFacultyValidationSchema,
+  ),
+  AcademicFacultyControllers.createAcademicFaculty,
 );
-router.get('/', AcademicFacultyControllers.getAllFaculty);
+router.get('/', AcademicFacultyControllers.getAcademicFaculties);
 
-router.get('/:facultyId', AcademicFacultyControllers.getFacultiesById);
+router.get('/:facultyId', AcademicFacultyControllers.getAcademicFacultiyById);
 
 router.patch(
   '/:facultyId',
-  validateRequest(AcademicFacultyValidations.updateFacultyValidationSchema),
-  AcademicFacultyControllers.updateFaculty,
+  validateRequest(
+    AcademicFacultyValidations.updateAcademicFacultyValidationSchema,
+  ),
+  AcademicFacultyControllers.updateAcademicFaculty,
 );
 
 export const AcademicFacultyRoutes = router;

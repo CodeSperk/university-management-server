@@ -10,9 +10,9 @@ const departmentSchema = new Schema<TDepartment>(
       required: true,
       unique: true,
     },
-    faculty: {
+    academicFaculty: {
       type: Schema.Types.ObjectId,
-      ref: 'Faculty',
+      ref: 'AcademicFaculty',
     },
   },
   {
@@ -42,4 +42,7 @@ departmentSchema.pre('findOneAndUpdate', async function (next) {
   next();
 });
 
-export const Department = model<TDepartment>('Department', departmentSchema);
+export const Department = model<TDepartment>(
+  'AcademicDepartment',
+  departmentSchema,
+);

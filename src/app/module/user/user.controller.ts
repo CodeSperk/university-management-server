@@ -4,9 +4,9 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 
 const createStudent = catchAsync(async (req, res) => {
-  const studentData = req.body;
+  const { password, student: studentData } = req.body;
 
-  const result = await UserServices.createStudentIntoDB(studentData);
+  const result = await UserServices.createStudentIntoDB(password, studentData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -17,10 +17,12 @@ const createStudent = catchAsync(async (req, res) => {
 });
 
 const createFacultyMember = catchAsync(async (req, res) => {
-  const facultyMemberData = req.body;
+  const { password, faculty: facultyData } = req.body;
 
-  const result =
-    await UserServices.createFacultyMemberIntoDB(facultyMemberData);
+  const result = await UserServices.createFacultyMemberIntoDB(
+    password,
+    facultyData,
+  );
 
   res.status(200).json({
     success: true,
@@ -30,9 +32,8 @@ const createFacultyMember = catchAsync(async (req, res) => {
 });
 
 const createAdmin = catchAsync(async (req, res) => {
-  const adminData = req.body;
-
-  const result = await UserServices.createAdminIntoDB(adminData);
+  const { password, admin: adminData } = req.body;
+  const result = await UserServices.createAdminIntoDB(password, adminData);
 
   res.status(200).json({
     success: true,

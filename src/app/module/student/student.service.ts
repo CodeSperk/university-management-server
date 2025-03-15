@@ -16,7 +16,7 @@ const getStudentsFromDB = async (query: Record<string, unknown>) => {
       .populate({
         path: 'department',
         populate: {
-          path: 'faculty',
+          path: 'academicFaculty',
         },
       }),
     query,
@@ -39,7 +39,7 @@ const getStudentByIdFromDB = async (id: string) => {
     .populate({
       path: 'department',
       populate: {
-        path: 'faculty',
+        path: 'academicFaculty',
       },
     });
   return result;

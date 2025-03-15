@@ -7,12 +7,12 @@ const createDepartmentIntoDB = async (payload: TDepartment) => {
 };
 
 const getDepartmentsFromDB = async () => {
-  const result = await Department.find().populate('faculty');
+  const result = await Department.find().populate('academicFaculty');
   return result;
 };
 
 const getDepartmentByIdFromDB = async (id: string) => {
-  const result = await Department.findById(id).populate('faculty');
+  const result = await Department.findById(id).populate('academicFaculty');
   return result;
 };
 

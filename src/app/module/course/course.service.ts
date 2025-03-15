@@ -6,8 +6,23 @@ import { TCourse, TCourseFaculties } from './course.interface';
 import { Course, CourseFaculty } from './course.model';
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
+import { CourseUtils } from './course.utils';
 
 const createCourseIntoDB = async (payload: TCourse) => {
+  //check if prerequisite exists
+  const { preRequisiteCourses } = payload;
+  if (preRequisiteCourses.length) {
+    const isInvalidPrerequisiteCourse =
+      await CourseUtils.isInvalidPrerequisiteCourse(preRequisiteCourses);
+
+    if (isInvalidPrerequisiteCourse) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Please Provide valid prerequisite course/courses',
+      );
+    }
+  }
+
   const result = await Course.create(payload);
   return result;
 };
@@ -36,7 +51,6 @@ const getCourseByIdFromDB = async (id: string) => {
 
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   const { preRequisiteCourses, ...remainingCourseData } = payload;
-
   const session = await mongoose.startSession(); //start session
 
   try {

@@ -102,9 +102,6 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       unique: [true, 'Student ID must be unique'],
       required: [true, 'Student ID is required'],
     },
-    password: {
-      type: String,
-    },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'User is is required'],
@@ -188,7 +185,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
     },
     department: {
       type: Schema.Types.ObjectId,
-      ref: 'Department',
+      ref: 'AcademicDepartment',
     },
     isDeleted: {
       type: Boolean,

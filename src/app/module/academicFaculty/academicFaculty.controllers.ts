@@ -1,12 +1,13 @@
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { FacultyServices } from './academicFaculty.service';
+import { AcademicFacultyServices } from './academicFaculty.service';
 import httpStatus from 'http-status';
 
-const createFaculty = catchAsync(async (req, res) => {
+const createAcademicFaculty = catchAsync(async (req, res) => {
   const faculty = req.body;
 
-  const result = await FacultyServices.createFacultyIntoDB(faculty);
+  const result =
+    await AcademicFacultyServices.createAcademicFacultyIntoDB(faculty);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -16,8 +17,8 @@ const createFaculty = catchAsync(async (req, res) => {
   });
 });
 
-const getAllFaculty = catchAsync(async (req, res) => {
-  const result = await FacultyServices.getAllFacultiesFromDB();
+const getAcademicFaculties = catchAsync(async (req, res) => {
+  const result = await AcademicFacultyServices.getAcademicFacultiesFromDB();
 
   res.status(httpStatus.OK).json({
     success: true,
@@ -26,9 +27,10 @@ const getAllFaculty = catchAsync(async (req, res) => {
   });
 });
 
-const getFacultiesById = catchAsync(async (req, res) => {
+const getAcademicFacultiyById = catchAsync(async (req, res) => {
   const { facultyId } = req.params;
-  const result = await FacultyServices.getFacultyByIdFromDB(facultyId);
+  const result =
+    await AcademicFacultyServices.getAcademicFacultyByIdFromDB(facultyId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -38,9 +40,12 @@ const getFacultiesById = catchAsync(async (req, res) => {
   });
 });
 
-const updateFaculty = catchAsync(async (req, res) => {
+const updateAcademicFaculty = catchAsync(async (req, res) => {
   const { facultyId } = req.params;
-  const result = await FacultyServices.updateFacultyIntoDB(facultyId, req.body);
+  const result = await AcademicFacultyServices.updateAcademicFacultyIntoDB(
+    facultyId,
+    req.body,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -50,8 +55,8 @@ const updateFaculty = catchAsync(async (req, res) => {
 });
 
 export const AcademicFacultyControllers = {
-  createFaculty,
-  getAllFaculty,
-  getFacultiesById,
-  updateFaculty,
+  createAcademicFaculty,
+  getAcademicFaculties,
+  getAcademicFacultiyById,
+  updateAcademicFaculty,
 };

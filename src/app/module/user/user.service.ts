@@ -8,13 +8,14 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 import AppError from '../../error/AppError';
 import httpStatus from 'http-status';
-import { TFacultyMember } from '../FacultyMembers/faculty.interface';
-import { FacultyMember } from '../FacultyMembers/faculty.model';
+import { TFaculty } from '../Faculty/faculty.interface';
+import { Faculty } from '../Faculty/faculty.model';
 import { idGenerator } from './user.utils';
 import { Department } from '../academicDepartment/dept.model';
 import { Admin } from '../admin/admin.model';
+import { TAdmin } from '../admin/admin.interface';
 
-const createStudentIntoDB = async (payload: TStudent) => {
+const createStudentIntoDB = async (password: string, payload: TStudent) => {
   //Create UserData
   const userData: Partial<TUser> = {};
 
@@ -29,7 +30,7 @@ const createStudentIntoDB = async (payload: TStudent) => {
   const userId = await idGenerator.generateStudentId(admissionSemester);
   userData.id = userId;
 
-  userData.password = payload.password || (config.default_pass as string);
+  userData.password = password || (config.default_pass as string);
   userData.role = 'student';
 
   //start session
@@ -67,12 +68,15 @@ const createStudentIntoDB = async (payload: TStudent) => {
   }
 };
 
-const createFacultyMemberIntoDB = async (payload: TFacultyMember) => {
+const createFacultyMemberIntoDB = async (
+  password: string,
+  payload: TFaculty,
+) => {
   //create user
   const userData: Partial<TUser> = {};
 
   userData.id = await idGenerator.generateFacultyMemberId();
-  userData.password = payload.password;
+  userData.password = password;
   userData.role = 'faculty';
 
   //find Academic Departmet info
@@ -100,7 +104,7 @@ const createFacultyMemberIntoDB = async (payload: TFacultyMember) => {
     facultyMemberData.id = newUser[0].id;
     facultyMemberData.user = newUser[0]._id;
 
-    const newFacultyMember = await FacultyMember.create([facultyMemberData], {
+    const newFacultyMember = await Faculty.create([facultyMemberData], {
       session,
     });
 
@@ -119,12 +123,12 @@ const createFacultyMemberIntoDB = async (payload: TFacultyMember) => {
   }
 };
 
-const createAdminIntoDB = async (payload: TFacultyMember) => {
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   //create user
   const userData: Partial<TUser> = {};
 
   userData.id = await idGenerator.generateAdminId();
-  userData.password = payload.password;
+  userData.password = password;
   userData.role = 'admin';
 
   //start-session

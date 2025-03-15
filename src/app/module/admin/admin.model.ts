@@ -37,9 +37,6 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
       unique: [true, 'Student ID must be unique'],
       required: [true, 'Student ID is required'],
     },
-    password: {
-      type: String,
-    },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'User is is required'],

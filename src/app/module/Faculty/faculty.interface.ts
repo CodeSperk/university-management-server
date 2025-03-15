@@ -1,19 +1,18 @@
 import { Types } from 'mongoose';
 
-export type TFacultyMemberName = {
+export type TFacultyName = {
   firstName: string;
   middleName: string;
   lastName: string;
 };
 
-export type TFacultyMember = {
+export type TFaculty = {
   id: string;
   designation: string;
-  name: TFacultyMemberName;
+  name: TFacultyName;
   gender: 'male' | 'female';
   dateOfBirth: string;
   email: string;
-  password: string;
   user: Types.ObjectId;
   contactNo: string;
   emergencyContactNo: string;
