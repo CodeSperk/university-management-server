@@ -2,7 +2,6 @@ import express from 'express';
 import { StudentControllers } from './student.controller';
 import validateRequest from '../../middleware/validateRequest';
 import { StudentValidationSchema } from './student.validation';
-import auth from '../../middleware/auth';
 
 const router = express.Router();
 

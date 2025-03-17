@@ -64,4 +64,15 @@ userSchema.statics.isPasswordMatched = async function (
   return await bcrypt.compare(plainTextPassword, hashPassword);
 };
 
+//static method to invalid jwt token after password change
+userSchema.statics.isJWTIssuedBeforeChange = function (
+  passwordChangedTimeStamp,
+  jwtIssuedTimeStamp,
+) {
+  const passwordChangeTime =
+    new Date(passwordChangedTimeStamp).getTime() / 1000;
+  // console.log(passwordChangeTime, jwtIssuedTimeStamp);
+  return passwordChangeTime > jwtIssuedTimeStamp;
+};
+
 export const User = model<TUser, UserModel>('User', userSchema);
