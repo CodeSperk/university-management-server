@@ -13,6 +13,8 @@ import { idGenerator } from './user.utils';
 import { Department } from '../academicDepartment/dept.model';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
+import config from '../../config';
+import { User_Role } from './user.constants';
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   //Create UserData
@@ -28,8 +30,8 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   userData.id = await idGenerator.generateStudentId(admissionSemester);
 
-  userData.password = password;
-  userData.role = 'student';
+  userData.password = password || config.default_pass;
+  userData.role = User_Role.student;
 
   //start session
   const session = await mongoose.startSession();
@@ -71,7 +73,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   const userData: Partial<TUser> = {};
 
   userData.id = await idGenerator.generateFacultyMemberId();
-  userData.password = password;
+  userData.password = password || config.default_pass;
   userData.role = 'faculty';
 
   //find Academic Departmet info
@@ -122,7 +124,7 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   const userData: Partial<TUser> = {};
 
   userData.id = await idGenerator.generateAdminId();
-  userData.password = password;
+  userData.password = password || config.default_pass;
   userData.role = 'admin';
 
   //start-session

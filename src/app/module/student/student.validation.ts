@@ -75,7 +75,6 @@ const createLocalGuardianValidationSchema = z.object({
 
 const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z.string({ invalid_type_error: 'Password must be string' }),
     student: z.object({
       name: createUserNameValidationSchema,
       gender: z.enum(['male', 'female'], {

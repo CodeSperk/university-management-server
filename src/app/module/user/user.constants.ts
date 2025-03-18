@@ -1,4 +1,4 @@
-export const USER_ROLE = {
+export const User_Role = {
   student: 'student',
   faculty: 'faculty',
   admin: 'admin',

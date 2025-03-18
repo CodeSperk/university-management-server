@@ -21,9 +21,11 @@ const createAdminNameValidationSchema = z.object({
 
 const createAdminValidationSchema = z.object({
   body: z.object({
-    password: z.string({
-      invalid_type_error: 'Password must be string',
-    }),
+    password: z
+      .string({
+        invalid_type_error: 'Password must be string',
+      })
+      .optional(),
     admin: z.object({
       name: createAdminNameValidationSchema,
       gender: z.enum([...(Gender as [string, ...string[]])]),
