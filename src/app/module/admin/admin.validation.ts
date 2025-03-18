@@ -21,45 +21,40 @@ const createAdminNameValidationSchema = z.object({
 
 const createAdminValidationSchema = z.object({
   body: z.object({
-    password: z.string({
-      invalid_type_error: 'Password must be string',
-    }),
-    admin: z.object({
-      name: createAdminNameValidationSchema,
-      gender: z.enum([...(Gender as [string, ...string[]])]),
-      email: z.string().trim().email({ message: 'Invalid email format' }),
-      dateOfBirth: z
-        .string()
-        .trim()
-        .regex(/^\d{4}-\d{2}-\d{2}$/, {
-          message: 'Date of Birth must be in YYYY-MM-DD format',
-        })
-        .optional(),
-      contactNo: z
-        .string()
-        .trim()
-        .regex(/^\d{10,15}$/, {
-          message: 'Contact number must be between 10 to 15 digits',
-        }),
-      emergencyContactNo: z
-        .string()
-        .trim()
-        .regex(/^\d{10,15}$/, {
-          message: 'Emergency contact number must be between 10 to 15 digits',
-        }),
-      bloodGroup: z.enum([...(BloodGroup as [string, ...string[]])]).optional(),
-      presentAddress: z.string().trim().min(5, {
-        message: 'Present address must be at least 5 characters long',
+    name: createAdminNameValidationSchema,
+    gender: z.enum([...(Gender as [string, ...string[]])]),
+    email: z.string().trim().email({ message: 'Invalid email format' }),
+    dateOfBirth: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, {
+        message: 'Date of Birth must be in YYYY-MM-DD format',
+      })
+      .optional(),
+    contactNo: z
+      .string()
+      .trim()
+      .regex(/^\d{10,15}$/, {
+        message: 'Contact number must be between 10 to 15 digits',
       }),
-      permanentAddress: z.string().trim().min(5, {
-        message: 'Permanent address must be at least 5 characters long',
+    emergencyContactNo: z
+      .string()
+      .trim()
+      .regex(/^\d{10,15}$/, {
+        message: 'Emergency contact number must be between 10 to 15 digits',
       }),
-      profileImg: z
-        .string()
-        .trim()
-        .url({ message: 'Invalid profile image URL' })
-        .optional(),
+    bloodGroup: z.enum([...(BloodGroup as [string, ...string[]])]).optional(),
+    presentAddress: z.string().trim().min(5, {
+      message: 'Present address must be at least 5 characters long',
     }),
+    permanentAddress: z.string().trim().min(5, {
+      message: 'Permanent address must be at least 5 characters long',
+    }),
+    profileImg: z
+      .string()
+      .trim()
+      .url({ message: 'Invalid profile image URL' })
+      .optional(),
   }),
 });
 

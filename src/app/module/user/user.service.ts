@@ -15,7 +15,7 @@ import { Department } from '../academicDepartment/dept.model';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData
   const userData: Partial<TUser> = {};
 
@@ -30,7 +30,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   const userId = await idGenerator.generateStudentId(admissionSemester);
   userData.id = userId;
 
-  userData.password = password || (config.default_pass as string);
+  userData.password = config.default_pass;
   userData.role = 'student';
 
   //start session
@@ -68,15 +68,12 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   }
 };
 
-const createFacultyMemberIntoDB = async (
-  password: string,
-  payload: TFaculty,
-) => {
+const createFacultyMemberIntoDB = async (payload: TFaculty) => {
   //create user
   const userData: Partial<TUser> = {};
 
   userData.id = await idGenerator.generateFacultyMemberId();
-  userData.password = password;
+  userData.password = config.default_pass;
   userData.role = 'faculty';
 
   //find Academic Departmet info
@@ -123,12 +120,12 @@ const createFacultyMemberIntoDB = async (
   }
 };
 
-const createAdminIntoDB = async (password: string, payload: TAdmin) => {
+const createAdminIntoDB = async (payload: TAdmin) => {
   //create user
   const userData: Partial<TUser> = {};
 
   userData.id = await idGenerator.generateAdminId();
-  userData.password = password;
+  userData.password = config.default_pass;
   userData.role = 'admin';
 
   //start-session

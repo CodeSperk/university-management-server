@@ -11,21 +11,18 @@ const router = express.Router();
 router.post(
   '/create-student',
   validateRequest(StudentValidationSchema.createStudentValidationSchema),
-  validateRequest(UserValidationSchema.createUserValidationSchema),
   UserControllers.createStudent,
 );
 
 router.post(
   '/create-faculty',
   validateRequest(FacultyValidations.createFacultySchema),
-  validateRequest(UserValidationSchema.createUserValidationSchema),
   UserControllers.createFacultyMember,
 );
 
 router.post(
   '/create-admin',
   validateRequest(AdminValidationSchema.createAdminValidationSchema),
-  validateRequest(UserValidationSchema.createUserValidationSchema),
   UserControllers.createAdmin,
 );
 

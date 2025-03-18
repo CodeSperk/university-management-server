@@ -8,39 +8,31 @@ const createFacultyNameSchema = z.object({
 
 const createFacultySchema = z.object({
   body: z.object({
-    password: z.string({
-      invalid_type_error: 'Password must be string',
-    }),
-    faculty: z.object({
-      designation: z.string().min(1, 'Designation is required').trim(),
-      name: createFacultyNameSchema,
-      gender: z.enum(['male', 'female'], {
-        errorMap: () => ({
-          message: 'Gender must be either "male" or "female"',
-        }),
+    designation: z.string().min(1, 'Designation is required').trim(),
+    name: createFacultyNameSchema,
+    gender: z.enum(['male', 'female'], {
+      errorMap: () => ({
+        message: 'Gender must be either "male" or "female"',
       }),
-      dateOfBirth: z
-        .string()
-        .regex(
-          /^\d{4}-\d{2}-\d{2}$/,
-          'Date of Birth must be in YYYY-MM-DD format',
-        ),
-      email: z.string().email('Invalid email format').trim(),
-      contactNo: z
-        .string()
-        .regex(/^\+?\d{11,14}$/, 'Invalid contact number format'),
-      // user: z.string(),
-      emergencyContactNo: z
-        .string()
-        .regex(/^\+?\d{11,14}$/, 'Invalid emergency contact number format'),
-      presentAddress: z.string().min(1, 'Present address is required').trim(),
-      permanentAddress: z
-        .string()
-        .min(1, 'Permanent address is required')
-        .trim(),
-      profileImage: z.string().optional(),
-      academicDepartment: z.string().min(1, 'Academic department is required'),
     }),
+    dateOfBirth: z
+      .string()
+      .regex(
+        /^\d{4}-\d{2}-\d{2}$/,
+        'Date of Birth must be in YYYY-MM-DD format',
+      ),
+    email: z.string().email('Invalid email format').trim(),
+    contactNo: z
+      .string()
+      .regex(/^\+?\d{11,14}$/, 'Invalid contact number format'),
+    // user: z.string(),
+    emergencyContactNo: z
+      .string()
+      .regex(/^\+?\d{11,14}$/, 'Invalid emergency contact number format'),
+    presentAddress: z.string().min(1, 'Present address is required').trim(),
+    permanentAddress: z.string().min(1, 'Permanent address is required').trim(),
+    profileImage: z.string().optional(),
+    academicDepartment: z.string().min(1, 'Academic department is required'),
   }),
 });
 
