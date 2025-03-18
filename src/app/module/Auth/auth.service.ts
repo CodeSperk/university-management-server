@@ -9,7 +9,6 @@ import bcrypt from 'bcrypt';
 const loginUser = async (payload: TLoginUser) => {
   //checking if the user is exists
   const existingUser = await User.isUserExistsByCustomId(payload.id);
-  console.log(existingUser);
   if (!existingUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'User is not found');
   }
@@ -42,8 +41,15 @@ const loginUser = async (payload: TLoginUser) => {
     expiresIn: '1d',
   });
 
+  const refreshToken = jwt.sign(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    { expiresIn: '30d' },
+  );
+
   return {
     accessToken,
+    refreshToken,
     needsPasswordChange: existingUser?.needsPasswordChange,
   };
 };
@@ -91,13 +97,62 @@ const changePasswordIntoDB = async (
     {
       password: newHashedPassword,
       needsPasswordChange: true,
+      passwordChangedAt: new Date(),
     },
   );
 
   return null;
 };
 
+const refreshToken = async (token: string) => {
+  //check if the given token is valid
+  const decoded = jwt.verify(
+    token,
+    config.jwt_refresh_secret as string,
+  ) as JwtPayload;
+
+  const { userId, iat } = decoded;
+
+  //checking if the user exists
+  const user = await User.isUserExistsByCustomId(userId);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
+  }
+
+  //checking if user is already deleted
+  if (user?.isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+  }
+
+  //checking if user is blocked
+  if (user?.status === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is bloked');
+  }
+
+  //check if the user changed password after token issued
+  if (
+    user.passwordChangedAt &&
+    User.isJWTIssuedBeforeChange(user.passwordChangedAt, iat as number)
+  ) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
+    expiresIn: '365d',
+  });
+
+  return {
+    accessToken,
+  };
+};
+
 export const AuthServices = {
   loginUser,
   changePasswordIntoDB,
+  refreshToken,
 };
