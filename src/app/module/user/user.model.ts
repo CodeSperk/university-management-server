@@ -6,7 +6,7 @@ import config from '../../config';
 const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
     needsPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
@@ -46,7 +46,7 @@ userSchema.post('save', function (doc, next) {
 
 //statistics method user check
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-  return await User.findOne({ id });
+  return await User.findOne({ id }).select('+password');
 };
 
 //Statistic method to match password
