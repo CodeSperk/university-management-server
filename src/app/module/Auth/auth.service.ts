@@ -3,8 +3,9 @@ import AppError from '../../error/AppError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import httpStatus from 'http-status';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const loginUser = async (payload: TLoginUser) => {
   //checking if the user is exists
@@ -39,14 +40,23 @@ const loginUser = async (payload: TLoginUser) => {
 
   const accessToken = jwt.sign(
     {
-      data: jwtPayload,
+      jwtPayload, // previous was, data : jwtPayload
     },
     config.jwt_access_secret as string,
-    { expiresIn: '10d' },
+    { expiresIn: '1d' },
+  );
+
+  const refreshToken = jwt.sign(
+    {
+      jwtPayload,
+    },
+    config.jwt_access_secret as string,
+    { expiresIn: '1d' },
   );
 
   return {
     accessToken,
+    refreshToken,
     needsPasswordChange: user?.needsPasswordChange,
   };
 };
@@ -56,7 +66,7 @@ const changePasswordIntoDB = async (
   payload: { oldPassword: string; newPassword: string },
 ) => {
   //checking if the user is exists
-  const user = await User.isUserExistsByCustomId(userData.data.userId);
+  const user = await User.isUserExistsByCustomId(userData.userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User is not found');
   }
@@ -89,8 +99,8 @@ const changePasswordIntoDB = async (
   //update new password
   await User.findOneAndUpdate(
     {
-      id: userData.data.userId,
-      role: userData.data.role,
+      id: userData.userId,
+      role: userData.role,
     },
     {
       password: newHashedPassword,

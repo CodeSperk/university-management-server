@@ -3,6 +3,7 @@ import { FacultyServices } from './faculty.service';
 
 const getFaculties = catchAsync(async (req, res) => {
   // console.log('test', req.user);
+  console.log(req.cookies);
   const result = await FacultyServices.getFacultiesFromDB();
   res.status(200).json({
     success: true,
