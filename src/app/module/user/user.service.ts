@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
-import config from '../../config';
 import { AcademicSemester } from '../academicSemester/semester.model';
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
@@ -14,6 +13,7 @@ import { idGenerator } from './user.utils';
 import { Department } from '../academicDepartment/dept.model';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
+import config from '../../config';
 
 const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData
@@ -27,8 +27,7 @@ const createStudentIntoDB = async (payload: TStudent) => {
     throw new Error('Academic Semester not found');
   }
 
-  const userId = await idGenerator.generateStudentId(admissionSemester);
-  userData.id = userId;
+  userData.id = await idGenerator.generateStudentId(admissionSemester);
 
   userData.password = config.default_pass;
   userData.role = 'student';
@@ -68,7 +67,7 @@ const createStudentIntoDB = async (payload: TStudent) => {
   }
 };
 
-const createFacultyMemberIntoDB = async (payload: TFaculty) => {
+const createFacultyIntoDB = async (payload: TFaculty) => {
   //create user
   const userData: Partial<TUser> = {};
 
@@ -100,7 +99,6 @@ const createFacultyMemberIntoDB = async (payload: TFaculty) => {
     const facultyMemberData = payload;
     facultyMemberData.id = newUser[0].id;
     facultyMemberData.user = newUser[0]._id;
-
     const newFacultyMember = await Faculty.create([facultyMemberData], {
       session,
     });
@@ -166,6 +164,6 @@ const createAdminIntoDB = async (payload: TAdmin) => {
 
 export const UserServices = {
   createStudentIntoDB,
-  createFacultyMemberIntoDB,
+  createFacultyIntoDB,
   createAdminIntoDB,
 };

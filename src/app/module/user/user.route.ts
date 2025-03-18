@@ -2,7 +2,6 @@ import express from 'express';
 import { UserControllers } from './user.controller';
 import validateRequest from '../../middleware/validateRequest';
 import { StudentValidationSchema } from '../student/student.validation';
-import { UserValidationSchema } from './user.validation';
 import { FacultyValidations } from '../Faculty/faculty.validation';
 import { AdminValidationSchema } from '../admin/admin.validation';
 import { USER_ROLE } from './user.constants';

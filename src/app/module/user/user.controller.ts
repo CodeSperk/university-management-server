@@ -15,7 +15,7 @@ const createStudent = catchAsync(async (req, res) => {
 });
 
 const createFacultyMember = catchAsync(async (req, res) => {
-  const result = await UserServices.createFacultyMemberIntoDB(req.body);
+  const result = await UserServices.createFacultyIntoDB(req.body);
 
   res.status(200).json({
     success: true,
