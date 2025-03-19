@@ -14,8 +14,9 @@ import { Department } from '../academicDepartment/dept.model';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
 import config from '../../config';
+import { sendImgToCloudinary } from '../../utils/sendImgToCloudinary';
 
-const createStudentIntoDB = async (payload: TStudent) => {
+const createStudentIntoDB = async (file: any, payload: TStudent) => {
   //Create UserData
   const userData: Partial<TUser> = {};
 
@@ -45,11 +46,15 @@ const createStudentIntoDB = async (payload: TStudent) => {
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
+    const imgName = `${payload.name.firstName}-${userData.id}`;
+    const profileImage = await sendImgToCloudinary(imgName, file.path);
+    console.log(profileImage);
 
     const studentData = payload;
 
     studentData.id = newUser[0].id;
     studentData.user = newUser[0]._id;
+    studentData.profileImg = profileImage.secure_url;
 
     //create student : transaction-2
     const newStudent = await Student.create([studentData], { session });

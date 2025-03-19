@@ -110,14 +110,8 @@ const createStudentValidationSchema = z.object({
     }),
     guardian: createGuardianValidationSchema,
     localGuardian: createLocalGuardianValidationSchema,
-    profileImg: z
-      .string()
-      .trim()
-      .url({ message: 'Invalid profile image URL' })
-      .optional(),
     admissionSemester: z.string(),
     department: z.string(),
-    idDeleted: z.boolean().default(false),
   }),
 });
 
