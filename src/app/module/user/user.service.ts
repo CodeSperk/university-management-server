@@ -14,7 +14,6 @@ import { Department } from '../academicDepartment/dept.model';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
 import config from '../../config';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const createStudentIntoDB = async (payload: TStudent) => {
   //Create UserData
@@ -166,14 +165,7 @@ const createAdminIntoDB = async (payload: TAdmin) => {
   }
 };
 
-const getMeFromDB = async (token: string) => {
-  //verify token
-  const decoded = jwt.verify(
-    token,
-    config.jwt_access_secret as string,
-  ) as JwtPayload;
-  const { userId, role } = decoded;
-
+const getMeFromDB = async (userId: string, role: string) => {
   let result = null;
   if (role === 'student') {
     result = await Student.findOne({ id: userId })
@@ -196,9 +188,19 @@ const getMeFromDB = async (token: string) => {
   return result;
 };
 
+const changeUserStatusIntoDB = async (
+  payload: { status: string },
+  id: string,
+) => {
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
+
+  return result;
+};
+
 export const UserServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
   getMeFromDB,
+  changeUserStatusIntoDB,
 };

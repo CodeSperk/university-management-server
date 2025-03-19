@@ -36,15 +36,23 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 
 const getMe = catchAsync(async (req, res) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
-  }
-  const result = await UserServices.getMeFromDB(token);
+  const { userId, role } = req.user;
+  const result = await UserServices.getMeFromDB(userId, role);
 
   res.status(200).json({
     success: true,
     message: 'User retrived Successfylly',
+    data: result,
+  });
+});
+
+const changeUserStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserServices.changeUserStatusIntoDB(req.body, id);
+
+  res.status(200).json({
+    success: true,
+    message: 'Status Updated successfully Successfylly',
     data: result,
   });
 });
@@ -54,4 +62,5 @@ export const UserControllers = {
   createFacultyMember,
   createAdmin,
   getMe,
+  changeUserStatus,
 };
