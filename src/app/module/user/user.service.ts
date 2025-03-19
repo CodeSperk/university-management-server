@@ -31,6 +31,7 @@ const createStudentIntoDB = async (payload: TStudent) => {
 
   userData.password = config.default_pass;
   userData.role = 'student';
+  userData.email = payload.email;
 
   //start session
   const session = await mongoose.startSession();
@@ -74,6 +75,7 @@ const createFacultyIntoDB = async (payload: TFaculty) => {
   userData.id = await idGenerator.generateFacultyMemberId();
   userData.password = config.default_pass;
   userData.role = 'faculty';
+  userData.email = payload.email;
 
   //find Academic Departmet info
   const isDepartmentExist = await Department.findById(
@@ -125,6 +127,7 @@ const createAdminIntoDB = async (payload: TAdmin) => {
   userData.id = await idGenerator.generateAdminId();
   userData.password = config.default_pass;
   userData.role = 'admin';
+  userData.email = payload.email;
 
   //start-session
   const session = await mongoose.startSession();

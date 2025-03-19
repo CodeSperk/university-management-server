@@ -5,6 +5,7 @@ import { TChangePassword, TLoginUser } from './auth.interface';
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { sendEmail } from '../../utils/sendEmail';
 
 const loginUser = async (payload: TLoginUser) => {
   //checking if the user is exists
@@ -178,9 +179,59 @@ const forgetPassword = async (id: string) => {
     expiresIn: '10m',
   });
 
-  const resetUILink = `http://localhost:3000?id=${isUserExists.id}&token=${resetToken}`;
+  const resetUILink = `${config.reset_pass_ui_link}?id=${isUserExists.id}&token=${resetToken}`;
 
-  console.log(resetUILink);
+  sendEmail(isUserExists?.email, resetUILink);
+  return null;
+};
+
+const resetPasswordIntoDB = async (
+  payload: {
+    id: string;
+    newPassword: string;
+  },
+  token: string,
+) => {
+  //check if the user exists
+  const isUserExists = await User.isUserExistsByCustomId(payload.id);
+  if (!isUserExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User is not found');
+  }
+
+  //check if the user is deleted
+  if (isUserExists.isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+  }
+
+  //check if the usuer is blocked
+  if (isUserExists.status === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'User is blocked');
+  }
+
+  //verify token
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+
+  //check if user is matched
+  if (decoded.userId !== payload.id) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized ');
+  }
+
+  //hash new password and update
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_round),
+  );
+
+  await User.findOneAndUpdate(
+    { id: decoded.userId, role: decoded.role },
+    {
+      password: newHashedPassword,
+      passwordChangedAt: new Date(),
+    },
+  );
   return null;
 };
 
@@ -189,4 +240,5 @@ export const AuthServices = {
   changePasswordIntoDB,
   refreshToken,
   forgetPassword,
+  resetPasswordIntoDB,
 };

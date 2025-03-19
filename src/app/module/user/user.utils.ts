@@ -64,7 +64,7 @@ const generateFacultyMemberId = async () => {
 };
 
 const generateAdminId = async () => {
-  const currentId = (await findLastUserId(User_Role.admin)) || '0000';
+  const currentId = (await findLastUserId('admin')) || '0000';
   const numericId = Number(currentId);
   let incrementId = (numericId + 1).toString().padStart(4, '0');
   incrementId = `A-${incrementId}`;

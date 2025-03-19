@@ -5,7 +5,8 @@ import config from '../../config';
 
 const userSchema = new Schema<TUser, UserModel>(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: 0 },
     needsPasswordChange: { type: Boolean, default: true },
     passwordChangedAt: {
