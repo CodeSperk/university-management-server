@@ -151,8 +151,42 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const forgetPassword = async (id: string) => {
+  //check if the user exists
+  const isUserExists = await User.isUserExistsByCustomId(id);
+  if (!isUserExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User is not found');
+  }
+
+  //check if the user is deleted
+  if (isUserExists.isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+  }
+
+  //check if the usuer is blocked
+  if (isUserExists.status === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'User is blocked');
+  }
+
+  //create token
+  const jwtPayload = {
+    userId: isUserExists.id,
+    role: isUserExists.role,
+  };
+
+  const resetToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
+    expiresIn: '10m',
+  });
+
+  const resetUILink = `http://localhost:3000?id=${isUserExists.id}&token=${resetToken}`;
+
+  console.log(resetUILink);
+  return null;
+};
+
 export const AuthServices = {
   loginUser,
   changePasswordIntoDB,
   refreshToken,
+  forgetPassword,
 };
