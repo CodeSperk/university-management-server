@@ -21,17 +21,17 @@ const auth = (...requiredRole: TUserRole[]) => {
     //check if the user is exists
     const user = await User.isUserExistsByCustomId(userId);
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'User is not found');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
 
     //check if the user is already deleted
     if (user?.isDeleted) {
-      throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted');
+      throw new AppError(httpStatus.FORBIDDEN, 'Your are not authorized');
     }
 
     // //check if the user is blocked
     if (user?.status === 'blocked') {
-      throw new AppError(httpStatus.FORBIDDEN, 'This user has been blocked');
+      throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized');
     }
 
     //make token invalid if password changed after token issued

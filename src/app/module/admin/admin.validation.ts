@@ -50,11 +50,6 @@ const createAdminValidationSchema = z.object({
     permanentAddress: z.string().trim().min(5, {
       message: 'Permanent address must be at least 5 characters long',
     }),
-    profileImg: z
-      .string()
-      .trim()
-      .url({ message: 'Invalid profile image URL' })
-      .optional(),
   }),
 });
 

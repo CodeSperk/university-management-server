@@ -97,13 +97,6 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     },
     profileImg: {
       type: String,
-      validate: {
-        validator: function (v: string) {
-          return /\.(jpg|jpeg|png|gif)$/.test(v); // Allow only image file extensions
-        },
-        message:
-          'Profile image must be a valid image file (jpg, jpeg, png, gif)',
-      },
     },
     isDeleted: {
       type: Boolean,

@@ -48,7 +48,6 @@ const createStudentIntoDB = async (file: any, payload: TStudent) => {
     }
     const imgName = `${payload.name.firstName}-${userData.id}`;
     const profileImage = await sendImgToCloudinary(imgName, file.path);
-    console.log(profileImage);
 
     const studentData = payload;
 
@@ -73,7 +72,7 @@ const createStudentIntoDB = async (file: any, payload: TStudent) => {
   }
 };
 
-const createFacultyIntoDB = async (payload: TFaculty) => {
+const createFacultyIntoDB = async (file: any, payload: TFaculty) => {
   //create user
   const userData: Partial<TUser> = {};
 
@@ -102,10 +101,15 @@ const createFacultyIntoDB = async (payload: TFaculty) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
 
+    //to upload image
+    const imgName = `${payload.name.firstName}-${userData.id}`;
+    const profileImage = await sendImgToCloudinary(imgName, file.path);
+
     //create new Faculty Member : Transaction-2
     const facultyMemberData = payload;
     facultyMemberData.id = newUser[0].id;
     facultyMemberData.user = newUser[0]._id;
+    facultyMemberData.profileImage = profileImage.source_url;
     const newFacultyMember = await Faculty.create([facultyMemberData], {
       session,
     });
@@ -125,7 +129,7 @@ const createFacultyIntoDB = async (payload: TFaculty) => {
   }
 };
 
-const createAdminIntoDB = async (payload: TAdmin) => {
+const createAdminIntoDB = async (file: any, payload: TAdmin) => {
   //create user
   const userData: Partial<TUser> = {};
 
@@ -141,6 +145,9 @@ const createAdminIntoDB = async (payload: TAdmin) => {
 
     //create new User : transaction-1
     const newUser = await User.create([userData], { session });
+    // to upload image
+    const imgName = `${payload.name.firstName}-${userData.id}`;
+    const profileImage = await sendImgToCloudinary(imgName, file.path);
 
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
@@ -150,6 +157,7 @@ const createAdminIntoDB = async (payload: TAdmin) => {
     const adminData = payload;
     adminData.id = newUser[0].id;
     adminData.user = newUser[0]._id;
+    adminData.profileImg = profileImage.secure_url;
 
     const newAdmin = await Admin.create([adminData], {
       session,
