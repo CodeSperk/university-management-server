@@ -22,12 +22,12 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
     statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
+    message = simplifiedError.messege;
     errorSources = simplifiedError.errorSources;
   } else if (err.name === 'ValidationError') {
     const simplifiedError = handleMongooseError(err);
     statusCode = simplifiedError?.statusCode;
-    message = simplifiedError?.message;
+    message = simplifiedError?.messege;
     errorSources = simplifiedError?.errorSources;
   } else if (err.name === 'CastError') {
     const simplifiedError = handleCastError(err);

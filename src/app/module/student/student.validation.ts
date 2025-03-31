@@ -111,7 +111,7 @@ const createStudentValidationSchema = z.object({
     guardian: createGuardianValidationSchema,
     localGuardian: createLocalGuardianValidationSchema,
     admissionSemester: z.string(),
-    department: z.string(),
+    academicDepartment: z.string(),
   }),
 });
 
@@ -265,11 +265,6 @@ const updateStudentValidationSchema = z.object({
       .optional(),
     guardian: updateGuardianValidationSchema,
     localGuardian: updateLocalGuardianValidationSchema,
-    profileImg: z
-      .string()
-      .trim()
-      .url({ message: 'Invalid profile image URL' })
-      .optional(),
     admissionSemester: z.string().optional(),
     department: z.string().optional(),
     idDeleted: z.boolean().default(false).optional(),

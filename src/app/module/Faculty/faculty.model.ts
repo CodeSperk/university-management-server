@@ -66,10 +66,15 @@ const facultySchema = new Schema<TFaculty>(
     },
     profileImage: {
       type: String,
+      default: '',
     },
     academicDepartment: {
       type: Schema.Types.ObjectId,
       ref: 'Department',
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
     },
     isDeleted: {
       type: Boolean,

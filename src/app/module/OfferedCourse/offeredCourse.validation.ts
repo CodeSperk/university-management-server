@@ -2,15 +2,17 @@ import { z } from 'zod';
 import { Days } from './offeredCourse.constants';
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-const timeStingSchema = z.string().refine((time) => timeRegex.test(time), {
-  message: 'Expected "HH:MM" in 24 hour Format',
-});
+const timeStingSchema = z
+  .string()
+  .refine((time) => timeRegex.test(time), {
+    message: 'Expected "HH:MM" in 24 hour Format',
+  })
+  .optional();
 
 const createOfferedCourseValidationSchema = z.object({
   body: z
     .object({
       semesterRegistration: z.string(),
-      academicFaculty: z.string(),
       academicDepartment: z.string(),
       course: z.string(),
       faculty: z.string(),
@@ -34,9 +36,9 @@ const createOfferedCourseValidationSchema = z.object({
 const updateOfferedCourseValidationSchema = z.object({
   body: z
     .object({
-      faculty: z.string(),
-      maxCapacity: z.number(),
-      days: z.array(z.enum([...Days] as [string, ...string[]])),
+      faculty: z.string().optional(),
+      maxCapacity: z.number().optional(),
+      days: z.array(z.enum([...Days] as [string, ...string[]])).optional(),
       startTime: timeStingSchema,
       endTime: timeStingSchema,
     })

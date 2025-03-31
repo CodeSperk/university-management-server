@@ -170,21 +170,19 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
     },
     profileImg: {
       type: String,
-      validate: {
-        validator: function (v: string) {
-          return /\.(jpg|jpeg|png|gif)$/.test(v); // Allow only image file extensions
-        },
-        message:
-          'Profile image must be a valid image file (jpg, jpeg, png, gif)',
-      },
+      default: '',
     },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
     },
-    department: {
+    academicDepartment: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicDepartment',
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
     },
     isDeleted: {
       type: Boolean,
@@ -199,11 +197,6 @@ studentSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
-
-// studentSchema.pre('findOne', function (next) {
-//   this.findOne({ isDeleted: { $ne: true } });
-//   next();
-// });
 
 //aggregate middleware to protect deleted data
 studentSchema.pre('aggregate', function (next) {

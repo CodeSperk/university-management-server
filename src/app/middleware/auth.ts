@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import config from '../config';
 import AppError from '../error/AppError';
 import { TUserRole } from '../module/user/user.interface';
@@ -15,7 +16,13 @@ const auth = (...requiredRole: TUserRole[]) => {
     }
 
     //verify token
-    const decoded = jwt.verify(token, config.jwt_access_secret as string);
+    let decoded;
+    try{
+      decoded = jwt.verify(token, config.jwt_access_secret as string);
+    }catch{
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    }
+
     const { userId, role, iat } = decoded as JwtPayload;
 
     //check if the user is exists

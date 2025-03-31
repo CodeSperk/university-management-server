@@ -11,7 +11,7 @@ import { CourseUtils } from './course.utils';
 const createCourseIntoDB = async (payload: TCourse) => {
   //check if prerequisite exists
   const { preRequisiteCourses } = payload;
-  if (preRequisiteCourses.length) {
+  if (preRequisiteCourses?.length) {
     const isInvalidPrerequisiteCourse =
       await CourseUtils.isInvalidPrerequisiteCourse(preRequisiteCourses);
 

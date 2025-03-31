@@ -38,7 +38,8 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImg?: string;
   admissionSemester: Types.ObjectId;
-  department: Types.ObjectId;
+  academicDepartment: Types.ObjectId;
+  academicFaculty?: Types.ObjectId;
   isDeleted: boolean;
 };
 
@@ -46,15 +47,3 @@ export type TStudent = {
 export interface TStudentModel extends Model<TStudent> {
   isUserExists(id: string): Promise<TStudent | null>;
 }
-
-// //custom instance method
-// export type TStudentMethods = {
-//   isUserExists(id: string): Promise<TStudent | null>;
-// };
-
-// //create student model type
-// export type TStudentModel = Model<
-//   TStudent,
-//   Record<string, never>,
-//   TStudentMethods
-// >;

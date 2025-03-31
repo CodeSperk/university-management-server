@@ -39,13 +39,13 @@ const loginUser = async (payload: TLoginUser) => {
   };
 
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-    expiresIn: '1d',
+    expiresIn: '5s',
   });
 
   const refreshToken = jwt.sign(
     jwtPayload,
     config.jwt_refresh_secret as string,
-    { expiresIn: '30d' },
+    { expiresIn: '15s' },
   );
 
   return {
@@ -144,7 +144,7 @@ const refreshToken = async (token: string) => {
   };
 
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-    expiresIn: '1d',
+    expiresIn: '5s',
   });
 
   return {
