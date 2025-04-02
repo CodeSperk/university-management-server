@@ -1,4 +1,6 @@
-import { SemerNameCodeMapper } from './semester.constants';
+/* eslint-disable prettier/prettier */
+import QueryBuilder from '../../builder/QueryBuilder';
+import { SemerNameCodeMapper, semesterSearchableFields } from './semester.constants';
 import { TAcademicSemester } from './semester.interface';
 import { AcademicSemester } from './semester.model';
 
@@ -10,9 +12,21 @@ const createSemesterIntoDB = async (payload: TAcademicSemester) => {
   return result;
 };
 
-const getSemestersFromDB = async () => {
-  const result = await AcademicSemester.find();
-  return result;
+const getSemestersFromDB = async (query: Record<string, unknown>) => {
+  const semesterQuery = new QueryBuilder(
+    AcademicSemester.find(),
+    query
+  )
+    .search(semesterSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+
+  const meta = await semesterQuery.countTotal();
+  const result = await semesterQuery.modelQuery;
+
+  return {meta, result};
 };
 
 const getSemesterByIdFromDB = async (id: string) => {

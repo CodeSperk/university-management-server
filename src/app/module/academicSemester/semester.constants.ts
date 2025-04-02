@@ -29,3 +29,10 @@ export const SemerNameCodeMapper: TSemesterNameCodeMapper = {
   Summer: '02',
   Fall: '03',
 };
+
+// eslint-disable-next-line prettier/prettier
+export const semesterSearchableFields = [
+  'name',
+  'code',
+  'year'
+];
