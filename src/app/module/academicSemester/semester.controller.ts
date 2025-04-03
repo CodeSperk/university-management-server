@@ -11,11 +11,12 @@ const createSemester = catchAsync(async (req, res) => {
 });
 
 const getSemesters = catchAsync(async (req, res) => {
-  const result = await SemesterServices.getSemestersFromDB();
+  const result = await SemesterServices.getSemestersFromDB(req.query);
   res.status(200).json({
     success: true,
     message: 'Here is your semesters',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

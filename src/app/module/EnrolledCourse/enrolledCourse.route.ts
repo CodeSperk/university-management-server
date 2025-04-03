@@ -3,6 +3,7 @@ import validateRequest from '../../middleware/validateRequest';
 import { EnrolledCourseValidations } from './enrolledCourse.validation';
 import { EnrolledCourseControllers } from './enrolledCourse.controller';
 import auth from '../../middleware/auth';
+import { USER_ROLE } from '../user/user.constants';
 
 const router = Router();
 
@@ -13,6 +14,12 @@ router.post(
     EnrolledCourseValidations.createEnrolledCourseValidationZodSchema,
   ),
   EnrolledCourseControllers.createEnrolledCourse,
+);
+
+router.get(
+  '/my-enrolled-courses',
+  auth(USER_ROLE.student),
+  EnrolledCourseControllers.getMyEnrolledCourses,
 );
 
 router.patch(

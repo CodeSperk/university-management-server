@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Router } from 'express';
 import { OfferedCourseControllers } from './offeredCourse.controller';
 import validateRequest from '../../middleware/validateRequest';
@@ -33,17 +34,11 @@ router.get(
 );
 router.patch(
   '/:id',
-  auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.faculty),
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   validateRequest(
     OfferedCourseValidationSchema.updateOfferedCourseValidationSchema,
   ),
   OfferedCourseControllers.updateOfferedCourse,
-);
-
-router.get(
-  '/my-offered-courses',
-  auth(USER_ROLE.student),
-  OfferedCourseControllers.getMyOfferedCourses,
 );
 
 export const OfferedCourseRoutes = router;

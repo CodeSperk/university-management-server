@@ -17,9 +17,9 @@ const auth = (...requiredRole: TUserRole[]) => {
 
     //verify token
     let decoded;
-    try{
+    try {
       decoded = jwt.verify(token, config.jwt_access_secret as string);
-    }catch{
+    } catch {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
 

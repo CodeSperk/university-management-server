@@ -44,23 +44,9 @@ const updateOfferedCourse = catchAsync(async (req, res) => {
   });
 });
 
-const getMyOfferedCourses = catchAsync(async (req, res) => {
-  const { userId } = req.user;
-  const result = await OfferedCourseServices.getMyOfferedCoursesFromDB(
-    userId,
-    req.query,
-  );
-  res.status(200).json({
-    success: true,
-    message: 'Here is your Offered Courses',
-    data: result,
-  });
-});
-
 export const OfferedCourseControllers = {
   createOfferedCourse,
   getOfferedCourses,
   getOfferedCourseById,
   updateOfferedCourse,
-  getMyOfferedCourses,
 };

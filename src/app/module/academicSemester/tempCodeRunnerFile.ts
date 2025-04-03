@@ -1,3 +1,1 @@
-export const semesterSearchableFields = [
-  "name", "code", "year"
-]
+export const semesterSearchableFields = ['name', 'code', 'year'];
