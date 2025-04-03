@@ -15,13 +15,13 @@ const createDepartment = catchAsync(async (req, res) => {
 });
 
 const GetAllDepartments = catchAsync(async (req, res) => {
-  const result = await DepartmentServices.getDepartmentsFromDB();
+  const result = await DepartmentServices.getDepartmentsFromDB(req.query);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
+  res.status(200).json({
     success: true,
     message: 'Here is you all depertments',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
