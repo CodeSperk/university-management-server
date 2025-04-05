@@ -192,6 +192,11 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
   { toJSON: { virtuals: true } },
 );
 
+//mongoose virtual
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name?.middleName} ${this.name.lastName}`;
+});
+
 //query middleware to get only undeleated data
 studentSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });

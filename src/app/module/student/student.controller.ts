@@ -3,10 +3,12 @@ import catchAsync from '../../utils/catchAsync';
 
 const getStudents = catchAsync(async (req, res) => {
   const result = await StudentServices.getStudentsFromDB(req.query);
+
   res.status(200).json({
     success: true,
     message: 'Students',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
