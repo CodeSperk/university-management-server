@@ -407,7 +407,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{ums-local-url}}/students?page=1&limit=1",
+							"raw": "{{ums-local-url}}/students?limit=3",
 							"host": [
 								"{{ums-local-url}}"
 							],
@@ -436,17 +436,18 @@
 									"disabled": true
 								},
 								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "1"
-								},
-								{
 									"key": "searchTerm",
 									"value": "student",
 									"disabled": true
+								},
+								{
+									"key": "total",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "3"
 								}
 							]
 						}
@@ -783,7 +784,13 @@
 					"name": "Get Semesters",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDM2MTgxODYsImV4cCI6MTc0MzcwNDU4Nn0.RIvwNue-w20zsgkA53ap8EoKPiib9vqh8txRv7gFthk",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{ums-local-url}}/semesters",
 							"host": [
@@ -1178,6 +1185,71 @@
 					"response": []
 				},
 				{
+					"name": "Get Offered Courses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ums-local-url}}/offered-courses",
+							"host": [
+								"{{ums-local-url}}"
+							],
+							"path": [
+								"offered-courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Offered Courses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ums-local-url}}/offered-courses/my-offered-courses",
+							"host": [
+								"{{ums-local-url}}"
+							],
+							"path": [
+								"offered-courses",
+								"my-offered-courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Offered course by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ums-local-url}}/offered-courses/67d957c0a7e21cdbbef2c4d5",
+							"host": [
+								"{{ums-local-url}}"
+							],
+							"path": [
+								"offered-courses",
+								"67d957c0a7e21cdbbef2c4d5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update Offered Course",
 					"request": {
 						"method": "PATCH",
@@ -1209,71 +1281,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Get Offered Courses",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{admin}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{ums-local-url}}/offered-courses",
-							"host": [
-								"{{ums-local-url}}"
-							],
-							"path": [
-								"offered-courses"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Offered course by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{ums-local-url}}/offered-courses/67d957c0a7e21cdbbef2c4d5",
-							"host": [
-								"{{ums-local-url}}"
-							],
-							"path": [
-								"offered-courses",
-								"67d957c0a7e21cdbbef2c4d5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get My Offered Courses",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMDI1MDIwMDAxIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NDI1NDgwODksImV4cCI6MTc0MjYzNDQ4OX0.erFXhu4qe_4Vb9cFTlbDWNN0KcHBJdZ87v00-S3r0x4",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{ums-local-url}}/courses/my-offered-courses",
-							"host": [
-								"{{ums-local-url}}"
-							],
-							"path": [
-								"courses",
-								"my-offered-courses"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -1284,7 +1291,13 @@
 					"name": "Login Student",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMDI1MDIwMDAxIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NDM2NzQ1OTYsImV4cCI6MTc0Mzc2MDk5Nn0.bR6rgT-VMmtJlNkB9MSBCjuG02Rqzxb9UUs6MAtdHmE",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"id\": \"2025020001\",\r\n    \"password\": \"User123\"\r\n}",
@@ -1341,7 +1354,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDI0MDgwNjYsImV4cCI6MTc0MjQ5NDQ2Nn0.cfr4MmG_OHgphhomUoo9eONzuuqo6RGXu4NxuwU_HRo",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDQzODE3MDgsImV4cCI6MTc0NDQ2ODEwOH0.84aKAmERERdw2T9o2Fw1OvkzMjn5Uqr-P35C07Q7tmA",
 								"type": "text"
 							}
 						],
@@ -1407,13 +1420,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDIzOTI4MTgsImV4cCI6MTc0MjQ3OTIxOH0.zRwjHCGP4LD6dXuJeLX4941zV4WaAQjuFyXW8muR26g",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDQzODE3MDgsImV4cCI6MTc0NDQ2ODEwOH0.84aKAmERERdw2T9o2Fw1OvkzMjn5Uqr-P35C07Q7tmA",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\" : \"User123\",\r\n    \"newPassword\" : \"Admin-0001\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\" : \"User123\",\r\n    \"newPassword\" : \"Admin123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1523,13 +1536,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMDI2MDIwMDAxIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NDI0NzA1NDMsImV4cCI6MTc0MjU1Njk0M30.iUmqlcqeXF2k-fvUFSvTabe4I891YniFln3fjaJ2xZw",
+								"value": "{{student}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"offeredCourse\" : \"67dc5cc87d17074a86f5ec4e\" \r\n}",
+							"raw": "{\r\n   \"offeredCourse\" : \"67dcc0241fde02e254ff568d\" \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1577,6 +1590,30 @@
 							"path": [
 								"enrolled-course",
 								"update-enrolled-course-marks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Enrolled Courses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{student}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ums-local-url}}/enrolled-course/my-enrolled-courses",
+							"host": [
+								"{{ums-local-url}}"
+							],
+							"path": [
+								"enrolled-course",
+								"my-enrolled-courses"
 							]
 						}
 					},
