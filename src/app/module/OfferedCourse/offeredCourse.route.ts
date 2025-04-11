@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Router } from 'express';
 import { OfferedCourseControllers } from './offeredCourse.controller';
 import validateRequest from '../../middleware/validateRequest';

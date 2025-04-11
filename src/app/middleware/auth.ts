@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import config from '../config';
 import AppError from '../error/AppError';
 import { TUserRole } from '../module/user/user.interface';

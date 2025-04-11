@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import QueryBuilder from '../../builder/QueryBuilder';
 import {
   SemerNameCodeMapper,

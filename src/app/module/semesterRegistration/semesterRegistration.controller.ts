@@ -23,7 +23,8 @@ const getSemesterRegistrations = catchAsync(async (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Here are Registered Semesters',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
